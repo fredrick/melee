@@ -85,10 +85,10 @@
       (bytes->hash (hash->bytes hashcode)) => hashcode)
 
     (fact "Convert between HashCode and int"
-      (.hashCode (int->hash (hash->int hashcode))) => (.hashCode hashcode))
+      (hash (int->hash (hash->int hashcode))) => (hash hashcode))
 
     (fact "Convert between HashCode and long"
-      (.hashCode (long->hash (hash->long hashcode))) => (.hashCode hashcode))
+      (hash (long->hash (hash->long hashcode))) => (hash hashcode))
 
     (fact "Convert between HashCode and string"
       (string->hash (hash->string hashcode)) => hashcode))
