@@ -91,4 +91,12 @@
       (.hashCode (long->hash (hash->long hashcode))) => (.hashCode hashcode))
 
     (fact "Convert between HashCode and string"
-      (string->hash (hash->string hashcode)) => hashcode)))
+      (string->hash (hash->string hashcode)) => hashcode))
+
+  (fact "Hash an integer"
+    (hash->string (hash-int (murmur3-32) 1))
+    => "2a40f1fb")
+
+  (fact "Hash a long"
+    (hash->string (hash-long (murmur3-32) 1))
+    => "445d0753"))

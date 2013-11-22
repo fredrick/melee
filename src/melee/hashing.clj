@@ -74,8 +74,18 @@
   ([^HashFunction hash-function ^bytes bytes]
     (.hashBytes hash-function bytes)))
 
+(defn hash-int
+  "Hash an integer."
+  ([^HashFunction hash-function ^Integer integer]
+    (.hashInt hash-function integer)))
+
+(defn hash-long
+  "Hash a long."
+  ([^HashFunction hash-function ^Long long]
+    (.hashLong hash-function long)))
+
 (defn hash-string
-  "Hash a string value."
+  "Hash a string."
   ([^HashFunction hash-function ^String string]
     (hash-bytes hash-function (.getBytes string "UTF-8")))
   ([^HashFunction hash-function char-sequence charset]
