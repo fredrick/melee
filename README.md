@@ -1,6 +1,6 @@
 # Melee
 
-Distributed distribution coordinator
+Distributed coordinator
 
 ## License
 
