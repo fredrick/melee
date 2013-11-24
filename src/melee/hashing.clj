@@ -90,3 +90,8 @@
     (hash-bytes hash-function (.getBytes string "UTF-8")))
   ([^HashFunction hash-function char-sequence charset]
     (.hashString hash-function char-sequence charset)))
+
+(defn hash-object
+  "Hash an object."
+  ([^HashFunction hash-function object]
+    (hash-string hash-function (str object))))

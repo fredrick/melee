@@ -99,4 +99,8 @@
 
   (fact "Hash a long"
     (hash->string (hash-long (murmur3-32) 1))
-    => "445d0753"))
+    => "445d0753")
+
+  (fact "Hash an object"
+    (hash->string (hash-object (murmur3-32) {:a 1}))
+    => "ac5472e5"))

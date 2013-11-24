@@ -4,6 +4,6 @@
   (:use [midje.sweet]))
 
 (facts "Consistent hashing partitioner"
-  (let [consistent-hash (ConsistentHash. murmur3-32 10 ())]
-    (fact "Create consistent hash"
-      consistent-hash => truthy)))
+  (let [ring (consistent-hash 10)]
+    (fact "Add an object"
+      (:ring (add ring 1)) => (has every? #(= 1 %)))))
