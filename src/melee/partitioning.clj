@@ -8,16 +8,22 @@
 
 ;;; Consistent hashing
 
-(defn- push [node replicas ring]
-  (apply merge ring
-    (map #(hash-map (hash->int (hash-object (murmur3-32 %) node)) node)
-      (range replicas))))
+(defn- allocate [node replicas]
+  (map #(hash-map (hash->int (hash-object (murmur3-32 %) node)) node)
+    (range replicas)))
+
+(defn- ring-push [node replicas ring]
+  (apply merge ring (consistent-partition node replicas)))
+
+(defn- ring-pop [node replicas ring]
+  (apply dissoc ring (map first (map keys (allocate node replicas)))))
 
 (defrecord ConsistentHash [replicas ring]
   Partitioner
   (add [this node]
-    (ConsistentHash. replicas (push node replicas ring)))
-  (delete [this node])
+    (ConsistentHash. replicas (ring-push node replicas ring)))
+  (delete [this node]
+    (ConsistentHash. replicas (ring-pop node replicas ring)))
   (lookup [this node]))
 
 (defn consistent-hash [replicas]
