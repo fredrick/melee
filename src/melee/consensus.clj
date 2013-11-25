@@ -13,4 +13,13 @@
   (vote [this ballot])
   (append [this entry]))
 
+(defn state [id current-term voted-for log commit-index last-applied]
+  (State. id current-term voted-for log commit-index last-applied))
+
+(defn intialize-state [id]
+  (state id 0 nil () 0 0))
+
 (defrecord Leader [state next-index match-index])
+
+(defn leader [state next-index match-index]
+  (Leader. state next-index match-index))
