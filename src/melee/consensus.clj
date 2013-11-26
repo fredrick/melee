@@ -13,7 +13,7 @@
 
 (defrecord State [id ^Number current-term voted-for log ^Number commit-index ^Number last-applied]
   Consensus
-  (vote [_ ballot] {:term current-term})
+  (vote [_ ballot] {:term current-term :vote-granted (> (:term ballot) current-term)})
   (append [_ entry]))
 
 (defrecord Leader [^State state next-index match-index])

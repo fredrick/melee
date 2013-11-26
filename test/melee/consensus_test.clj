@@ -22,4 +22,7 @@
                                        :match-index {}}))
 
     (fact "Vote response has current term"
-      (vote node2 (ballot 1 (:id node3) 0 0)) => (contains {:term 0}))))
+      (vote node2 (ballot 1 (:id node3) 0 0)) => (contains {:term 0}))
+
+    (fact "Vote not granted if voter term is greater than candidate term"
+      (vote (state (uuid) 1 nil () 0 0) (ballot 0 (:id node3) 0 0)) => {:term 1 :vote-granted false})))
