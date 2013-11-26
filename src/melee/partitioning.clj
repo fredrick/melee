@@ -2,9 +2,9 @@
   (:use melee.hashing))
 
 (defprotocol Partitioner
-  (add [this node])
-  (delete [this node])
-  (lookup [this object]))
+  (add [_ node])
+  (delete [_ node])
+  (lookup [_ object]))
 
 ;;; Consistent hashing
 
@@ -23,13 +23,13 @@
 
 (defrecord ConsistentHash [replicas ring]
   Partitioner
-  (add [this node]
+  (add [_ node]
     "Add node to consistent hash ring."
     (ConsistentHash. replicas (ring-push ring node replicas)))
-  (delete [this node]
+  (delete [_ node]
     "Delete node from consistent hash ring."
     (ConsistentHash. replicas (ring-pop ring node replicas)))
-  (lookup [this object]
+  (lookup [_ object]
     "Look up node to use for object from consistent hash ring."
     (if-not (empty? ring)
       (let [hash (hash->long (hash-object (murmur3-128) object))

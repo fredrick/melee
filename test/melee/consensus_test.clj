@@ -5,9 +5,11 @@
 
 (facts "Raft consensus"
   (let [id (uuid)
-        start (intialize-state id)]
+        node1 (state id 0 nil () 0 0)
+        node2 (state (uuid) 0 nil () 0 0)
+        node3 (state (uuid) 0 nil () 0 0)]
     (fact "Start state"
-      start => (contains {:id id
+      node1 => (contains {:id id
                          :current-term 0
                          :voted-for nil
                          :log ()
@@ -15,6 +17,9 @@
                          :last-applied 0}))
 
     (fact "Start leader state"
-      (leader start {} {}) => (contains {:state start
+      (leader node1 {} {}) => (contains {:state node1
                                        :next-index {}
-                                       :match-index {}}))))
+                                       :match-index {}}))
+
+    (fact "Vote response has current term"
+      (vote node2 (ballot 1 (:id node3) 0 0)) => (contains {:term 0}))))
