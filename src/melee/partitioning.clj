@@ -24,13 +24,13 @@
 (defrecord ConsistentHash [replicas ring]
   Partitioner
   (add [_ node]
-    "Add node to consistent hash ring."
+    "Adds node to consistent hash ring."
     (ConsistentHash. replicas (ring-push ring node replicas)))
   (delete [_ node]
-    "Delete node from consistent hash ring."
+    "Deletes node from consistent hash ring."
     (ConsistentHash. replicas (ring-pop ring node replicas)))
   (lookup [_ object]
-    "Look up node to use for object from consistent hash ring."
+    "Finds node to use for object from consistent hash ring."
     (if-not (empty? ring)
       (let [hash (hash->long (hash-object (murmur3-128) object))
             tail-map (tail-map ring hash)]
@@ -40,8 +40,8 @@
 
 (defn consistent-hash
   ([replicas]
-    "Create a new consistent hash ring."
+    "Creates a new consistent hash ring."
     (ConsistentHash. replicas (sorted-map)))
   ([nodes replicas]
-    "Create a new consistent hash ring with one or many seed nodes."
+    "Creates a new consistent hash ring with one or many seed nodes."
     (reduce add (ConsistentHash. replicas (sorted-map)) nodes)))

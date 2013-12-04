@@ -1,4 +1,4 @@
-(ns melee.consensus-test
+(ns melee.consensus_test
   (:use [melee.core])
   (:use [melee.consensus])
   (:use [midje.sweet]))
@@ -25,4 +25,6 @@
       (vote node2 (ballot 1 (:id node3) 0 0)) => (contains {:term 0}))
 
     (fact "Vote not granted if voter term is greater than candidate term"
-      (vote (state (uuid) 1 nil () 0 0) (ballot 0 (:id node3) 0 0)) => {:term 1 :vote-granted false})))
+      (vote
+        (state (uuid) 1 nil () 0 0)
+        (ballot 0 (:id node3) 0 0)) => {:term 1 :vote-granted false})))
