@@ -1,4 +1,5 @@
-(ns melee.consensus)
+(ns melee.consensus
+  (:import (clojure.lang IPersistentVector)))
 
 (defprotocol Consensus
   (vote [_ ballot])
@@ -9,7 +10,7 @@
 
 (defrecord Ballot [^Number term candidate-id ^Number last-log-index ^Number last-log-term])
 
-(defrecord State [id ^Number current-term voted-for log ^Number commit-index ^Number last-applied]
+(defrecord State [id ^Number current-term voted-for ^IPersistentVector log ^Number commit-index ^Number last-applied]
   Consensus
   (vote [_ ballot] {:term current-term
                     :vote-granted (> (:term ballot) current-term)})
@@ -21,7 +22,7 @@
   "Ballot for leader election."
   (Ballot. term candidate-id last-log-index last-log-term))
 
-(defn state [id ^Number current-term voted-for log ^Number commit-index ^Number last-applied]
+(defn state [id ^Number current-term voted-for ^IPersistentVector log ^Number commit-index ^Number last-applied]
   "State for node."
   (State. id current-term voted-for log commit-index last-applied))
 

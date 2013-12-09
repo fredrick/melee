@@ -1,4 +1,5 @@
-(ns melee.log)
+(ns melee.log
+  (:import (clojure.lang IPersistentVector)))
 
 (defrecord Entry [^Number term leader-id ^Number prev-log-index ^Number prev-log-term entries ^Number leader-commit])
 
@@ -8,7 +9,12 @@
 
 (defn start-index [^IPersistentVector log]
   "Returns first log index."
-  (let [length (count log)]
-    (if (zero? length)
-      length
-      (:prev-log-index (first log)))))
+  (if (empty? log)
+    0
+    (:prev-log-index (first log))))
+
+(defn last-index [^IPersistentVector log]
+  "Returns last log index."
+  (if (empty? log)
+    0
+    (:prev-log-index (last log))))

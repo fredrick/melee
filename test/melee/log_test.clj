@@ -19,4 +19,19 @@
       (start-index (conj log
                          (entry 0 id 1 0 ["Log2"] 0)
                          (entry 0 id 2 0 ["Log3"] 0)
-                         (entry 0 id 3 0 ["Log4" "Log5"] 0))) => 1)))
+                         (entry 0 id 3 0 ["Log4" "Log5"] 0))) => 1)
+
+    (fact "Last index is 0 for empty log"
+      (last-index log) => 0)
+
+    (fact "Last index is last log index when adding entry to log
+           (indices are strictly monotonically increasing across terms and snapshots)"
+      (last-index (conj log
+                        (entry 0 id (start-index log) 0 ["Log"] 0))) => 0
+      (last-index (conj log
+                        (entry 0 id 0 0 ["Log1"] 0)
+                        (entry 0 id 1 0 ["Log2"] 0))) => 1
+      (last-index (conj log
+                        (entry 0 id 1 0 ["Log2"] 0)
+                        (entry 0 id 2 0 ["Log3"] 0)
+                        (entry 0 id 3 0 ["Log4" "Log5"] 0))) => 3)))
