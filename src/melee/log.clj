@@ -18,3 +18,9 @@
   (if (empty? log)
     0
     (:prev-log-index (last log))))
+
+(defn last-term [^IPersistentVector log]
+  "Returns last log term."
+  (if (empty? log)
+    0
+    (:term (last log))))

@@ -34,4 +34,18 @@
       (last-index (conj log
                         (entry 0 id 1 0 ["Log2"] 0)
                         (entry 0 id 2 0 ["Log3"] 0)
-                        (entry 0 id 3 0 ["Log4" "Log5"] 0))) => 3)))
+                        (entry 0 id 3 0 ["Log4" "Log5"] 0))) => 3)
+
+    (fact "Last term is 0 for empty log"
+      (last-term log) => 0)
+
+    (fact "Last term is term of last entry in log"
+      (last-term (conj log
+                       (entry 0 id (start-index log) 0 ["Log"] 0))) => 0
+      (last-term (conj log
+                       (entry 0 id 0 0 ["Log1"] 0)
+                       (entry 1 id 1 0 ["Log2"] 0))) => 1
+      (last-term (conj log
+                       (entry 0 id 1 0 ["Log2"] 0)
+                       (entry 1 id 2 0 ["Log3"] 0)
+                       (entry 2 id 3 0 ["Log4" "Log5"] 0))) => 2)))
