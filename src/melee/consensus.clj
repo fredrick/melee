@@ -17,11 +17,11 @@
     (let [log-is-current? (or (> (:last-log-term ballot) (last-term log))
                             (and (= (:last-log-term ballot) (last-term log))
                                  (>= (:last-log-index ballot) (last-index log))))]
-      {:term (max current-term (:term ballot))
+      {:term (max (:term ballot) current-term)
        :vote-granted (and
                        (= (:term ballot) current-term)
                        log-is-current?
-                       (or (nil? voted-for) (= voted-for (:candidate-id ballot))))}))
+                       (or (nil? voted-for) (= (:candidate-id ballot) voted-for)))}))
   (append [_ entry]))
 
 (defrecord Leader [^State state next-index match-index])
