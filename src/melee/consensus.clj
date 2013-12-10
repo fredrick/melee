@@ -1,4 +1,5 @@
 (ns melee.consensus
+  (:use [melee.log])
   (:import (clojure.lang IPersistentVector)))
 
 (defprotocol Consensus
@@ -12,8 +13,15 @@
 
 (defrecord State [id ^Number current-term voted-for ^IPersistentVector log ^Number commit-index ^Number last-applied]
   Consensus
-  (vote [_ ballot] {:term current-term
-                    :vote-granted (> (:term ballot) current-term)})
+  (vote [_ ballot]
+    (let [log-is-current? (or (> (:last-log-term ballot) (last-term log))
+                            (and (= (:last-log-term ballot) (last-term log))
+                                 (>= (:last-log-index ballot) (last-index log))))]
+      {:term (max current-term (:term ballot))
+       :vote-granted (and
+                       (= (:term ballot) current-term)
+                       log-is-current?
+                       (or (nil? voted-for) (= voted-for (:candidate-id ballot))))}))
   (append [_ entry]))
 
 (defrecord Leader [^State state next-index match-index])
