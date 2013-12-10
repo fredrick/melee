@@ -14,6 +14,7 @@
 (defrecord State [id ^Number current-term voted-for ^IPersistentVector log ^Number commit-index ^Number last-applied]
   Consensus
   (vote [_ ballot]
+    "Handle vote request and return vote status."
     (let [log-is-current? (or (> (:last-log-term ballot) (last-term log))
                             (and (= (:last-log-term ballot) (last-term log))
                                  (>= (:last-log-index ballot) (last-index log))))]
