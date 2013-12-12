@@ -9,18 +9,12 @@
 
 (defn start-index [^IPersistentVector log]
   "Returns first log index."
-  (if (empty? log)
-    0
-    (:prev-log-index (first log))))
+  (if (empty? log) 0 (:prev-log-index (first log))))
 
 (defn last-index [^IPersistentVector log]
   "Returns last log index."
-  (if (empty? log)
-    0
-    (:prev-log-index (last log))))
+  (if (empty? log) 0 (:prev-log-index (last log))))
 
 (defn last-term [^IPersistentVector log]
   "Returns last log term."
-  (if (empty? log)
-    0
-    (:term (last log))))
+  (if (empty? log) 0 (:term (last log))))
