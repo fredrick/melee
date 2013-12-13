@@ -41,5 +41,5 @@
 
     (fact "Vote granted if voted-for is equivalent to candidate and candidate's log is equivalent to receiver's log"
       (vote
-        (state (:id node3) 1 nil [] 0 0)
+        (state (uuid) 1 (:id node3) [] 0 0)
         (ballot 1 (:id node3) 0 0)) => {:term 1 :vote-granted true})))
