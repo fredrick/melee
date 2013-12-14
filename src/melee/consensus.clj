@@ -27,12 +27,12 @@
 
 (defn ballot [^Number term candidate-id ^Number last-log-index ^Number last-log-term]
   "Ballot for leader election."
-  (Ballot. term candidate-id last-log-index last-log-term))
+  (->Ballot term candidate-id last-log-index last-log-term))
 
 (defn state [id ^Number current-term voted-for ^IPersistentVector log ^Number commit-index ^Number last-applied]
   "State for node."
-  (State. id current-term voted-for log commit-index last-applied))
+  (->State id current-term voted-for log commit-index last-applied))
 
 (defn leader [^State state next-index match-index]
   "Leader from state."
-  (Leader. state next-index match-index))
+  (->Leader state next-index match-index))

@@ -25,10 +25,10 @@
   Partitioner
   (add [_ node]
     "Adds node to consistent hash ring."
-    (ConsistentHash. replicas (ring-push ring node replicas)))
+    (->ConsistentHash replicas (ring-push ring node replicas)))
   (delete [_ node]
     "Deletes node from consistent hash ring."
-    (ConsistentHash. replicas (ring-pop ring node replicas)))
+    (->ConsistentHash replicas (ring-pop ring node replicas)))
   (lookup [_ object]
     "Finds node to use for object from consistent hash ring."
     (if-not (empty? ring)
@@ -41,7 +41,7 @@
 (defn consistent-hash
   ([replicas]
     "Creates a new consistent hash ring."
-    (ConsistentHash. replicas (sorted-map)))
+    (->ConsistentHash replicas (sorted-map)))
   ([nodes replicas]
     "Creates a new consistent hash ring with one or many seed nodes."
-    (reduce add (ConsistentHash. replicas (sorted-map)) nodes)))
+    (reduce add (->ConsistentHash replicas (sorted-map)) nodes)))
