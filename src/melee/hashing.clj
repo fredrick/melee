@@ -1,7 +1,7 @@
 (ns melee.hashing
   (:import (com.google.common.hash HashCode HashFunction Hashing)))
 
-;;; Hash functions
+;;; ## Hash Functions
 
 (defn murmur3-32
   ([]     (Hashing/murmur3_32))
@@ -33,7 +33,7 @@
 (defn adler32
   ([]     (Hashing/adler32)))
 
-;;; Data converters
+;;; ## Data Converters
 
 (defn hash->bytes
   "Converts a HashCode to a byte array."
@@ -67,7 +67,7 @@
   "Converts a string to a HashCode."
   [string] (HashCode/fromString string))
 
-;;; Hashed value functions
+;;; ## Hashed Value Functions
 
 (defn hash-bytes
   "Hash a byte array."

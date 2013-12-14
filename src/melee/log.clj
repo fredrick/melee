@@ -3,18 +3,19 @@
 
 (defrecord Entry [^Number term leader-id ^Number prev-log-index ^Number prev-log-term entries ^Number leader-commit])
 
-(defn entry [^Number term leader-id ^Number prev-log-index ^Number prev-log-term entries ^Number leader-commit]
+(defn entry
   "Entry for log."
+  [^Number term leader-id ^Number prev-log-index ^Number prev-log-term entries ^Number leader-commit]
   (->Entry term leader-id prev-log-index prev-log-term entries leader-commit))
 
-(defn start-index [^IPersistentVector log]
+(defn start-index
   "Returns first log index."
-  (if (empty? log) 0 (:prev-log-index (first log))))
+  [^IPersistentVector log] (if (empty? log) 0 (:prev-log-index (first log))))
 
-(defn last-index [^IPersistentVector log]
+(defn last-index
   "Returns last log index."
-  (if (empty? log) 0 (:prev-log-index (last log))))
+  [^IPersistentVector log] (if (empty? log) 0 (:prev-log-index (last log))))
 
-(defn last-term [^IPersistentVector log]
+(defn last-term
   "Returns last log term."
-  (if (empty? log) 0 (:term (last log))))
+  [^IPersistentVector log] (if (empty? log) 0 (:term (last log))))

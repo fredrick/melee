@@ -2,11 +2,11 @@
   (:use melee.hashing))
 
 (defprotocol Partitioner
-  (add [_ node])
-  (delete [_ node])
-  (lookup [_ object]))
+  (add [this node] "Adds node to consistent hash ring.")
+  (delete [this node] "Deletes node from consistent hash ring.")
+  (lookup [this object] "Finds node to use for object from consistent hash ring."))
 
-;;; Consistent hashing
+;;; ## Consistent Hashing
 
 (defn- allocate [node replicas]
   (map #(hash-map (hash->long (hash-object (murmur3-128 %) node)) node)
@@ -23,14 +23,11 @@
 
 (defrecord ConsistentHash [replicas ring]
   Partitioner
-  (add [_ node]
-    "Adds node to consistent hash ring."
+  (add [this node]
     (->ConsistentHash replicas (ring-push ring node replicas)))
-  (delete [_ node]
-    "Deletes node from consistent hash ring."
+  (delete [this node]
     (->ConsistentHash replicas (ring-pop ring node replicas)))
-  (lookup [_ object]
-    "Finds node to use for object from consistent hash ring."
+  (lookup [this object]
     (if-not (empty? ring)
       (let [hash (hash->long (hash-object (murmur3-128) object))
             tail-map (tail-map ring hash)]
@@ -39,9 +36,6 @@
           (val (first tail-map)))))))
 
 (defn consistent-hash
-  ([replicas]
-    "Creates a new consistent hash ring."
-    (->ConsistentHash replicas (sorted-map)))
-  ([nodes replicas]
-    "Creates a new consistent hash ring with one or many seed nodes."
-    (reduce add (->ConsistentHash replicas (sorted-map)) nodes)))
+  "Returns a new consistent hash ring, with or without one or many seed nodes."
+  ([replicas] (->ConsistentHash replicas (sorted-map)))
+  ([nodes replicas] (reduce add (->ConsistentHash replicas (sorted-map)) nodes)))
