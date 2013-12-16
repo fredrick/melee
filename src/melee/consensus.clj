@@ -14,9 +14,13 @@
 (defprotocol Consensus
   (vote
     [this ballot]
-    "Returns a vote response containing the voter's :term for the
+    "Returns a vote response containing the follower's :term for the
     candidate to update itself and :vote-granted, true meaning candidate received vote.")
-  (append [this entry]))
+  (append
+    [this entry]
+    "Returns an append entries response containing the :term for the
+    leader to update itself and :success, true if the follower contained entry
+    matching :prev-log-index and prev-log-term."))
 
 (defrecord Ballot [^Number term candidate-id ^Number last-log-index ^Number last-log-term])
 

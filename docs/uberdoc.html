@@ -3043,9 +3043,13 @@ major pieces needed for practical systems.</p>
 </td><td class="codes"><pre class="brush: clojure">(defprotocol Consensus
   (vote
     [this ballot]
-    &quot;Returns a vote response containing the voter's :term for the
+    &quot;Returns a vote response containing the follower's :term for the
     candidate to update itself and :vote-granted, true meaning candidate received vote.&quot;)
-  (append [this entry]))</pre></td></tr><tr><td class="docs">
+  (append
+    [this entry]
+    &quot;Returns an append entries response containing the :term for the
+    leader to update itself and :success, true if the follower contained entry
+    matching :prev-log-index and prev-log-term.&quot;))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defrecord Ballot [^Number term candidate-id ^Number last-log-index ^Number last-log-term])</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defrecord State [id ^Number current-term voted-for ^IPersistentVector log ^Number commit-index ^Number last-applied]
   Consensus
