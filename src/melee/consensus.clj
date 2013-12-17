@@ -34,7 +34,7 @@
        :vote-granted (and (= (:term ballot) current-term)
                           log-is-current?
                           (or (nil? voted-for) (= (:candidate-id ballot) voted-for)))}))
-  (append [this entry]))
+  (append [this entry] {:term (max (:term entry) current-term)}))
 
 (defrecord Leader [^State state next-index match-index])
 
