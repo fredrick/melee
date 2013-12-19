@@ -1,6 +1,7 @@
 # Melee
 
 [![Build Status](https://travis-ci.org/wayoutmind/melee.png?branch=master)](https://travis-ci.org/wayoutmind/melee)
+[![Dependencies Status](http://jarkeeper.com/wayoutmind/melee/status.png)](http://jarkeeper.com/wayoutmind/melee)
 
 Melee provides distributed system primitives. It is not a database or a messaging queue, but these could be built using Melee.
 
