@@ -1,8 +1,8 @@
 (ns melee.consensus_test
-  (:use [melee.core])
-  (:use [melee.consensus])
-  (:use [melee.log])
-  (:use [midje.sweet]))
+  (:use [melee.core]
+        [melee.consensus]
+        [melee.log]
+        [midje.sweet]))
 
 (facts "Raft consensus"
   (let [id (uuid)
@@ -48,4 +48,7 @@
 
     (facts "HandleAppendEntriesRequest"
       (fact "Append response has current term"
-        (append node2 (entry 0 (:id node3) 0 0 [] 0)) => (contains {:term 0})))))
+        (append node2 (entry 0 (:id node3) 0 0 [] 0)) => (contains {:term 0}))
+
+      (fact "Append success is false if receiver term is greater than leader's term"
+        (append (state (uuid) 1 nil [] 0 0) (entry 0 (:id node2) 0 0 [] 0)) => {:success false :term 1}))))
