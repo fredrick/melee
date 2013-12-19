@@ -1,7 +1,7 @@
 (ns melee.partitioning-test
-  (:use [melee.hashing])
-  (:use [melee.partitioning])
-  (:use [midje.sweet]))
+  (:use [melee.hashing]
+        [melee.partitioning]
+        [midje.sweet]))
 
 (facts "Consistent hashing partitioner"
   (let [ring (consistent-hash 10)

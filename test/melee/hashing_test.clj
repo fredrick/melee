@@ -1,6 +1,6 @@
 (ns melee.hashing-test
-  (:use [melee.hashing])
-  (:use [midje.sweet]))
+  (:use [melee.hashing]
+        [midje.sweet]))
 
 (defn- string->bytes [^String string] (.getBytes string "UTF-8"))
 

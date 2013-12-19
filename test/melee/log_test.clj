@@ -1,7 +1,7 @@
 (ns melee.log_test
-  (:use [melee.core])
-  (:use [melee.log])
-  (:use [midje.sweet]))
+  (:use [melee.core]
+        [melee.log]
+        [midje.sweet]))
 
 (facts "Consensus log"
   (let [id (uuid)
