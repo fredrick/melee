@@ -24,7 +24,9 @@
 
     (facts "HandleRequestVoteRequest"
       (fact "Vote response has current term"
-        (vote node2 (ballot 0 (:id node3) 0 0)) => (contains {:term 0}))
+        (vote
+          node2
+          (ballot 0 (:id node3) 0 0)) => (contains {:term 0}))
 
       (fact "Vote not granted if voter term is greater than candidate term"
         (vote
@@ -48,7 +50,16 @@
 
     (facts "HandleAppendEntriesRequest"
       (fact "Append response has current term"
-        (append node2 (entry 0 (:id node3) 0 0 [] 0)) => (contains {:term 0}))
+        (append
+          node2
+          (entry 0 (:id node3) 0 0 [] 0)) => (contains {:term 0}))
 
       (fact "Append success is false if receiver term is greater than leader's term"
-        (append (state (uuid) 1 nil [] 0 0) (entry 0 (:id node2) 0 0 [] 0)) => {:success false :term 1}))))
+        (append
+          (state (uuid) 1 nil [] 0 0)
+          (entry 0 (:id node2) 0 0 [] 0)) => {:success false :term 1})
+
+      (fact "Append success is true if leader's previous log index is zero"
+        (append
+          (state (uuid) 0 (:id node3) [] 0 0)
+          (entry 0 (:id node3) 0 0 ["Log1"] 0)) => {:success true :term 0}))))

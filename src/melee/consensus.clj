@@ -36,7 +36,8 @@
                           (or (nil? voted-for) (= (:candidate-id ballot) voted-for)))}))
   (append [this entry]
     {:term (max (:term entry) current-term)
-     :success (and (= (:term entry) current-term))}))
+     :success (and (= (:term entry) current-term)
+                   (or (zero? (:prev-log-index entry))))}))
 
 (defrecord Leader [^State state next-index match-index])
 
