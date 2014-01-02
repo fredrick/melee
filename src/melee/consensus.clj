@@ -37,7 +37,10 @@
   (append [this entry]
     {:term (max (:term entry) current-term)
      :success (and (= (:term entry) current-term)
-                   (or (zero? (:prev-log-index entry))))}))
+                   (or (zero? (:prev-log-index entry))
+                       (and (> (:prev-log-index entry) 0)
+                            (<= (:prev-log-index entry) (count log))
+                            (= (:prev-log-term entry) (:term (nth log (:prev-log-index entry)))))))}))
 
 (defrecord Leader [^State state next-index match-index])
 

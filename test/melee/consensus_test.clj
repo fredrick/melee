@@ -62,4 +62,26 @@
       (fact "Append success is true if leader's previous log index is zero"
         (append
           (state (uuid) 0 (:id node3) [] 0 0)
-          (entry 0 (:id node3) 0 0 ["Log1"] 0)) => {:success true :term 0}))))
+          (entry 0 (:id node3) 0 0 ["Log1"] 0)) => {:success true :term 0})
+
+      (fact "Append success is false if leader's previous log index is greater than zero
+        and greater than length of receiver's log"
+        (append
+          (state (uuid) 0 (:id node3) [] 0 0)
+          (entry 0 (:id node3) 1 0 ["Log1"] 0)) => {:success false :term 0})
+
+      (fact "Append success is false if leader's previous log index is greater than zero,
+        less than length of receiver's log, and receiver's term of log entry at leader's
+        previous log index is not equal to leader's previous log term"
+        (append
+          (state (uuid) 0 (:id node3) (vector (entry 0 (:id node3) 0 0 ["Log0"] 0)
+                                              (entry 0 (:id node3) 1 0 ["Log1"] 0)) 0 0)
+          (entry 1 (:id node3) 1 0 ["Log2"] 0)) => {:success false :term 1})
+
+      (fact "Append success is true if leader's previous log index is greater than zero,
+        less than length of receiver's log, and receiver's term of log entry at leader's
+        previous log index is equal to leader's previous log term"
+          (append
+            (state (uuid) 0 (:id node3) (vector (entry 0 (:id node3) 0 0 ["Log0"] 0)
+                                                (entry 0 (:id node3) 1 0 ["Log1"] 0)) 0 0)
+            (entry 0 (:id node3) 1 0 ["Log2"] 0)) => {:success true :term 0}))))
