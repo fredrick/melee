@@ -4,33 +4,42 @@
 ;;; ## Hash Functions
 
 (defn murmur3-32
+  "Returns MurmurHash 3 (32 bit) hash function."
   ([]     (Hashing/murmur3_32))
   ([seed] (Hashing/murmur3_32 seed)))
 
 (defn murmur3-128
+  "Returns MurmurHash 3 (128 bit) hash function."
   ([]     (Hashing/murmur3_128))
   ([seed] (Hashing/murmur3_128 seed)))
 
 (defn sip24
+  "Returns SipHash-2-4 hash function."
   ([]     (Hashing/sipHash24))
   ([k0 k1] (Hashing/sipHash24 k0 k1)))
 
 (defn md5
+  "Returns MD5 hash function."
   ([]     (Hashing/md5)))
 
 (defn sha1
+  "Returns SHA-1 hash function."
   ([]     (Hashing/sha1)))
 
 (defn sha256
+  "Returns SHA-256 hash function."
   ([]     (Hashing/sha256)))
 
 (defn sha512
+  "Returns SHA-512 hash function."
   ([]     (Hashing/sha512)))
 
 (defn crc32
+  "Returns CRC-32 hash function."
   ([]     (Hashing/crc32)))
 
 (defn adler32
+  "Returns Adler-32 hash function."
   ([]     (Hashing/adler32)))
 
 ;;; ## Data Converters
