@@ -3141,16 +3141,32 @@ major pieces needed for practical systems.</p>
     (hash-string hash-function (str object))))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#melee.log" name="melee.log"><h1 class="project-name">melee.log</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(ns melee.log
   (:import (clojure.lang IPersistentVector)))</pre></td></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(defprotocol Log
+  (start-index
+    [this]
+    &quot;Returns first log index.&quot;)
+  (last-index
+    [this]
+    &quot;Returns last log index.&quot;)
+  (last-term
+    [this]
+    &quot;Returns last log term.&quot;)
+  (append!
+    [this {:term :success} entry]
+    &quot;Appends a log entry to the log given append entries response is
+    successful.&quot;))</pre></td></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(extend-protocol Log
+  IPersistentVector
+  (start-index [this]
+    (if (empty? this) 0 (:prev-log-index (first this))))
+  (last-index [this]
+    (if (empty? this) 0 (:prev-log-index (last this))))
+  (last-term [this]
+    (if (empty? this) 0 (:term (last this)))))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defrecord Entry [^Number term leader-id ^Number prev-log-index ^Number prev-log-term entries ^Number leader-commit])</pre></td></tr><tr><td class="docs"><p>Entry for log.</p>
 </td><td class="codes"><pre class="brush: clojure">(defn entry
   [^Number term leader-id ^Number prev-log-index ^Number prev-log-term entries ^Number leader-commit]
-  (-&gt;Entry term leader-id prev-log-index prev-log-term entries leader-commit))</pre></td></tr><tr><td class="docs"><p>Returns first log index.</p>
-</td><td class="codes"><pre class="brush: clojure">(defn start-index
-  [^IPersistentVector log] (if (empty? log) 0 (:prev-log-index (first log))))</pre></td></tr><tr><td class="docs"><p>Returns last log index.</p>
-</td><td class="codes"><pre class="brush: clojure">(defn last-index
-  [^IPersistentVector log] (if (empty? log) 0 (:prev-log-index (last log))))</pre></td></tr><tr><td class="docs"><p>Returns last log term.</p>
-</td><td class="codes"><pre class="brush: clojure">(defn last-term
-  [^IPersistentVector log] (if (empty? log) 0 (:term (last log))))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#melee.partitioning" name="melee.partitioning"><h1 class="project-name">melee.partitioning</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
+  (-&gt;Entry term leader-id prev-log-index prev-log-term entries leader-commit))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#melee.partitioning" name="melee.partitioning"><h1 class="project-name">melee.partitioning</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(ns melee.partitioning
   (:use melee.hashing))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defprotocol Partitioner
