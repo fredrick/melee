@@ -103,4 +103,4 @@
 (defn hash-object
   "Hash an object."
   ([^HashFunction hash-function object]
-    (hash-string hash-function (str object))))
+    (hash-string hash-function (binding [*print-dup* true] (pr-str object)))))

@@ -3138,7 +3138,7 @@ major pieces needed for practical systems.</p>
     (.hashString hash-function char-sequence charset)))</pre></td></tr><tr><td class="docs"><p>Hash an object.</p>
 </td><td class="codes"><pre class="brush: clojure">(defn hash-object
   ([^HashFunction hash-function object]
-    (hash-string hash-function (str object))))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#melee.log" name="melee.log"><h1 class="project-name">melee.log</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
+    (hash-string hash-function (binding [*print-dup* true] (pr-str object)))))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#melee.log" name="melee.log"><h1 class="project-name">melee.log</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(ns melee.log
   (:import (clojure.lang IPersistentVector)))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defprotocol Log

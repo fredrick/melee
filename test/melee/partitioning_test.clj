@@ -31,10 +31,10 @@
       (lookup (add ring node1) "object1") => node1)
 
     (fact "Lookup another node for hash ring with two nodes"
-      (lookup (add (add ring node1) node2) "object5") => node2)
+      (lookup (add (add ring node1) node2) "object2") => node2)
 
     (fact "Lookup another node for hash ring with three nodes"
-      (lookup (add (add (add ring node1) node2) node3) "object7") => node3)
+      (lookup (add (add (add ring node1) node2) node3) "object5") => node3)
 
     (fact "Initialize consistent hash with vector of nodes"
       (consistent-hash [node1 node2 node3] 10) => (add (add (add ring node1) node2) node3))))

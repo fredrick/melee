@@ -103,4 +103,4 @@
 
   (fact "Hash an object"
     (hash->string (hash-object (murmur3-32) {:a 1}))
-    => "ac5472e5"))
+    => "bb326b0d"))
