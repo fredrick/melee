@@ -3152,7 +3152,7 @@ major pieces needed for practical systems.</p>
     [this]
     &quot;Returns last log term.&quot;)
   (append!
-    [this {:term :success} entry]
+    [this {term :term success :success} entry]
     &quot;Appends a log entry to the log given append entries response is
     successful.&quot;))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(extend-protocol Log
@@ -3162,7 +3162,10 @@ major pieces needed for practical systems.</p>
   (last-index [this]
     (if (empty? this) 0 (:prev-log-index (last this))))
   (last-term [this]
-    (if (empty? this) 0 (:term (last this)))))</pre></td></tr><tr><td class="docs">
+    (if (empty? this) 0 (:term (last this))))
+  (append! [this {term :term success :success} entry]
+    (if (not success)
+      this)))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defrecord Entry [^Number term leader-id ^Number prev-log-index ^Number prev-log-term entries ^Number leader-commit])</pre></td></tr><tr><td class="docs"><p>Entry for log.</p>
 </td><td class="codes"><pre class="brush: clojure">(defn entry
   [^Number term leader-id ^Number prev-log-index ^Number prev-log-term entries ^Number leader-commit]
