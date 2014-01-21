@@ -10,11 +10,7 @@
     "Returns last log index.")
   (last-term
     [this]
-    "Returns last log term.")
-  (append!
-    [this {term :term success :success} entry]
-    "Appends a log entry to the log given append entries response is
-    successful."))
+    "Returns last log term."))
 
 (extend-protocol Log
   IPersistentVector
@@ -23,10 +19,7 @@
   (last-index [this]
     (if (empty? this) 0 (:prev-log-index (last this))))
   (last-term [this]
-    (if (empty? this) 0 (:term (last this))))
-  (append! [this {term :term success :success} entry]
-    (if (not success)
-      this)))
+    (if (empty? this) 0 (:term (last this)))))
 
 (defrecord Entry [^Number term leader-id ^Number prev-log-index ^Number prev-log-term entries ^Number leader-commit])
 

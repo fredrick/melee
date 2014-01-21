@@ -3043,13 +3043,15 @@ major pieces needed for practical systems.</p>
 </td><td class="codes"><pre class="brush: clojure">(defprotocol Consensus
   (vote
     [this ballot]
-    &quot;Returns a vote response containing the follower's :term for the
-    candidate to update itself and :vote-granted, true meaning candidate received vote.&quot;)
+    &quot;Returns a vote response containing the follower's :term for the candidate,
+    to update itself :vote-granted, true meaning candidate received vote,
+    and updated :state of the follower.&quot;)
   (append
     [this entry]
     &quot;Returns an append entries response containing the :term for the
-    leader to update itself and :success, true if the follower contained entry
-    matching :prev-log-index and prev-log-term.&quot;))</pre></td></tr><tr><td class="docs">
+    leader to update itself, :success, true if the follower contained entry
+    matching :prev-log-index and prev-log-term, and updated :state with
+    entry appended to log.&quot;))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defrecord Ballot [^Number term candidate-id ^Number last-log-index ^Number last-log-term])</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defrecord State [id ^Number current-term voted-for ^IPersistentVector log ^Number commit-index ^Number last-applied]
   Consensus
@@ -3057,17 +3059,24 @@ major pieces needed for practical systems.</p>
     (let [log-is-current? (or (&gt; (:last-log-term ballot) (last-term log))
                               (and (= (:last-log-term ballot) (last-term log))
                                    (&gt;= (:last-log-index ballot) (last-index log))))]
-      {:term (max (:term ballot) current-term)
-       :vote-granted (and (= (:term ballot) current-term)
-                          log-is-current?
-                          (or (nil? voted-for) (= (:candidate-id ballot) voted-for)))}))
+      (let [term (max (:term ballot) current-term)
+            grant (and (= (:term ballot) current-term)
+                              log-is-current?
+                              (or (nil? voted-for) (= (:candidate-id ballot) voted-for)))]
+        {:term term
+          :vote-granted grant
+          :state (if (and grant (nil? voted-for))
+                   (-&gt;State id term (:candidate-id ballot) log commit-index last-applied)
+                   (-&gt;State id term voted-for log commit-index last-applied))})))
   (append [this entry]
-    {:term (max (:term entry) current-term)
-     :success (and (= (:term entry) current-term)
-                   (or (zero? (:prev-log-index entry))
-                       (and (&gt; (:prev-log-index entry) 0)
-                            (&lt;= (:prev-log-index entry) (count log))
-                            (= (:prev-log-term entry) (:term (nth log (:prev-log-index entry)))))))}))</pre></td></tr><tr><td class="docs">
+    (let [term (max (:term entry) current-term)
+          accept (and (= (:term entry) current-term)
+                      (or (zero? (:prev-log-index entry))
+                          (and (&gt; (:prev-log-index entry) 0)
+                               (&lt;= (:prev-log-index entry) (count log))
+                               (= (:prev-log-term entry) (:term (nth log (:prev-log-index entry)))))))]
+      {:term term
+        :success accept})))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defrecord Leader [^State state next-index match-index])</pre></td></tr><tr><td class="docs"><p>Ballot for leader election.</p>
 </td><td class="codes"><pre class="brush: clojure">(defn ballot
   [^Number term candidate-id ^Number last-log-index ^Number last-log-term]
@@ -3150,11 +3159,7 @@ major pieces needed for practical systems.</p>
     &quot;Returns last log index.&quot;)
   (last-term
     [this]
-    &quot;Returns last log term.&quot;)
-  (append!
-    [this {term :term success :success} entry]
-    &quot;Appends a log entry to the log given append entries response is
-    successful.&quot;))</pre></td></tr><tr><td class="docs">
+    &quot;Returns last log term.&quot;))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(extend-protocol Log
   IPersistentVector
   (start-index [this]
@@ -3162,10 +3167,7 @@ major pieces needed for practical systems.</p>
   (last-index [this]
     (if (empty? this) 0 (:prev-log-index (last this))))
   (last-term [this]
-    (if (empty? this) 0 (:term (last this))))
-  (append! [this {term :term success :success} entry]
-    (if (not success)
-      this)))</pre></td></tr><tr><td class="docs">
+    (if (empty? this) 0 (:term (last this)))))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defrecord Entry [^Number term leader-id ^Number prev-log-index ^Number prev-log-term entries ^Number leader-commit])</pre></td></tr><tr><td class="docs"><p>Entry for log.</p>
 </td><td class="codes"><pre class="brush: clojure">(defn entry
   [^Number term leader-id ^Number prev-log-index ^Number prev-log-term entries ^Number leader-commit]

@@ -48,7 +48,4 @@
       (last-term (conj log
                        (entry 0 id 1 0 ["Log2"] 0)
                        (entry 1 id 2 0 ["Log3"] 0)
-                       (entry 2 id 3 0 ["Log4" "Log5"] 0))) => 2)
-
-    (fact "Log is unchanged if append entries response is not successful"
-      (append! log {:term 0 :success false} (entry 0 id 0 0 ["Log1"] 0)) => log)))
+                       (entry 2 id 3 0 ["Log4" "Log5"] 0))) => 2)))

@@ -31,22 +31,22 @@
       (fact "Vote not granted if voter term is greater than candidate term"
         (vote
           (state (uuid) 1 nil [] 0 0)
-          (ballot 0 (:id node3) 0 0)) => {:term 1 :vote-granted false})
+          (ballot 0 (:id node3) 0 0)) => (contains {:term 1 :vote-granted false}))
 
       (fact "Vote not granted if voted-for not nil and not equal to candidate id"
         (vote
           (state (uuid) 0 (:id node2) [] 0 0)
-          (ballot 0 (:id node3) 0 0)) => {:term 0 :vote-granted false})
+          (ballot 0 (:id node3) 0 0)) => (contains {:term 0 :vote-granted false}))
 
       (fact "Vote granted if voted-for is nil and candidate's log is equivalent to receiver's log"
         (vote
           (state (uuid) 1 nil [] 0 0)
-          (ballot 1 (:id node3) 0 0)) => {:term 1 :vote-granted true})
+          (ballot 1 (:id node3) 0 0)) => (contains {:term 1 :vote-granted true}))
 
       (fact "Vote granted if voted-for is equivalent to candidate and candidate's log is equivalent to receiver's log"
         (vote
           (state (uuid) 1 (:id node3) [] 0 0)
-          (ballot 1 (:id node3) 0 0)) => {:term 1 :vote-granted true}))
+          (ballot 1 (:id node3) 0 0)) => (contains {:term 1 :vote-granted true})))
 
     (facts "HandleAppendEntriesRequest"
       (fact "Append response has current term"
