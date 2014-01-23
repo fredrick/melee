@@ -31,25 +31,25 @@
   (vote [this ballot]
     (let [log-is-current? (or (> (:last-log-term ballot) (last-term log))
                               (and (= (:last-log-term ballot) (last-term log))
-                                   (>= (:last-log-index ballot) (last-index log))))]
-      (let [term (max (:term ballot) current-term)
-            grant (and (= (:term ballot) current-term)
-                              log-is-current?
-                              (or (nil? voted-for) (= (:candidate-id ballot) voted-for)))]
-        {:term term
-          :vote-granted grant
-          :state (if (and grant (nil? voted-for))
-                   (->State id term (:candidate-id ballot) log commit-index last-applied)
-                   (->State id term voted-for log commit-index last-applied))})))
+                                   (>= (:last-log-index ballot) (last-index log))))
+          term (max (:term ballot) current-term)
+          grant? (and (= (:term ballot) current-term)
+                      log-is-current?
+                      (or (nil? voted-for) (= (:candidate-id ballot) voted-for)))]
+      {:term term
+       :vote-granted grant?
+       :state (if (and grant? (nil? voted-for))
+                (->State id term (:candidate-id ballot) log commit-index last-applied)
+                (->State id term voted-for log commit-index last-applied))}))
   (append [this entry]
     (let [term (max (:term entry) current-term)
-          accept (and (= (:term entry) current-term)
+          accept? (and (= (:term entry) current-term)
                       (or (zero? (:prev-log-index entry))
                           (and (> (:prev-log-index entry) 0)
                                (<= (:prev-log-index entry) (count log))
                                (= (:prev-log-term entry) (:term (nth log (:prev-log-index entry)))))))]
       {:term term
-        :success accept})))
+        :success accept?})))
 
 (defrecord Leader [^State state next-index match-index])
 
