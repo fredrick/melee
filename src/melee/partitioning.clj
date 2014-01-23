@@ -2,9 +2,9 @@
   (:use melee.hashing))
 
 (defprotocol Partitioner
-  (add [this node] "Adds node to consistent hash ring.")
-  (delete [this node] "Deletes node from consistent hash ring.")
-  (lookup [this object] "Finds node to use for object from consistent hash ring."))
+  (add [this node] "Adds node.")
+  (delete [this node] "Deletes node.")
+  (lookup [this object] "Finds node to use for object."))
 
 ;;; ## Consistent Hashing
 
@@ -36,6 +36,6 @@
           (val (first tail-map)))))))
 
 (defn consistent-hash
-  "Returns a new consistent hash ring, with or without one or many seed nodes."
+  "Returns a new consistent hash ring, with zero or many seed nodes."
   ([replicas] (->ConsistentHash replicas (sorted-map)))
   ([nodes replicas] (reduce add (->ConsistentHash replicas (sorted-map)) nodes)))
