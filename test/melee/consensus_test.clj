@@ -30,23 +30,23 @@
 
       (fact "Vote not granted if voter term is greater than candidate term"
         (vote
-          (state (uuid) 1 nil [] 0 0)
-          (ballot 0 (:id node3) 0 0)) => (contains {:term 1 :vote-granted false}))
+          (state id 1 nil [] 0 0)
+          (ballot 0 (:id node3) 0 0)) => {:term 1 :vote-granted false :state (state id 1 nil [] 0 0)})
 
       (fact "Vote not granted if voted-for not nil and not equal to candidate id"
         (vote
-          (state (uuid) 0 (:id node2) [] 0 0)
-          (ballot 0 (:id node3) 0 0)) => (contains {:term 0 :vote-granted false}))
+          (state id 0 (:id node2) [] 0 0)
+          (ballot 0 (:id node3) 0 0)) => {:term 0 :vote-granted false :state (state id 0 (:id node2) [] 0 0)})
 
       (fact "Vote granted if voted-for is nil and candidate's log is equivalent to receiver's log"
         (vote
-          (state (uuid) 1 nil [] 0 0)
-          (ballot 1 (:id node3) 0 0)) => (contains {:term 1 :vote-granted true}))
+          (state id 1 nil [] 0 0)
+          (ballot 1 (:id node3) 0 0)) => {:term 1 :vote-granted true :state (state id 1 (:id node3) [] 0 0)})
 
       (fact "Vote granted if voted-for is equivalent to candidate and candidate's log is equivalent to receiver's log"
         (vote
-          (state (uuid) 1 (:id node3) [] 0 0)
-          (ballot 1 (:id node3) 0 0)) => (contains {:term 1 :vote-granted true})))
+          (state id 1 (:id node3) [] 0 0)
+          (ballot 1 (:id node3) 0 0)) => {:term 1 :vote-granted true :state (state id 1 (:id node3) [] 0 0)}))
 
     (facts "HandleAppendEntriesRequest"
       (fact "Append response has current term"
@@ -56,25 +56,25 @@
 
       (fact "Append success is false if receiver term is greater than leader's term"
         (append
-          (state (uuid) 1 nil [] 0 0)
+          (state id 1 nil [] 0 0)
           (entry 0 (:id node2) 0 0 [] 0)) => {:success false :term 1})
 
       (fact "Append success is true if leader's previous log index is zero"
         (append
-          (state (uuid) 0 (:id node3) [] 0 0)
+          (state id 0 (:id node3) [] 0 0)
           (entry 0 (:id node3) 0 0 ["Log1"] 0)) => {:success true :term 0})
 
       (fact "Append success is false if leader's previous log index is greater than zero
         and greater than length of receiver's log"
         (append
-          (state (uuid) 0 (:id node3) [] 0 0)
+          (state id 0 (:id node3) [] 0 0)
           (entry 0 (:id node3) 1 0 ["Log1"] 0)) => {:success false :term 0})
 
       (fact "Append success is false if leader's previous log index is greater than zero,
         less than length of receiver's log, and receiver's term of log entry at leader's
         previous log index is not equal to leader's previous log term"
         (append
-          (state (uuid) 0 (:id node3) (vector (entry 0 (:id node3) 0 0 ["Log0"] 0)
+          (state id 0 (:id node3) (vector (entry 0 (:id node3) 0 0 ["Log0"] 0)
                                               (entry 0 (:id node3) 1 0 ["Log1"] 0)) 0 0)
           (entry 1 (:id node3) 1 0 ["Log2"] 0)) => {:success false :term 1})
 
@@ -82,6 +82,6 @@
         less than length of receiver's log, and receiver's term of log entry at leader's
         previous log index is equal to leader's previous log term"
           (append
-            (state (uuid) 0 (:id node3) (vector (entry 0 (:id node3) 0 0 ["Log0"] 0)
+            (state id 0 (:id node3) (vector (entry 0 (:id node3) 0 0 ["Log0"] 0)
                                                 (entry 0 (:id node3) 1 0 ["Log1"] 0)) 0 0)
             (entry 0 (:id node3) 1 0 ["Log2"] 0)) => {:success true :term 0}))))
