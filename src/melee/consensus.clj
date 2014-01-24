@@ -49,7 +49,10 @@
                                (<= (:prev-log-index entry) (count log))
                                (= (:prev-log-term entry) (:term (nth log (:prev-log-index entry)))))))]
       {:term term
-        :success accept?})))
+        :success accept?
+        :state (if accept?
+                 (->State id term voted-for (conj log entry) (inc commit-index) last-applied)
+                 (->State id term voted-for log commit-index last-applied))})))
 
 (defrecord Leader [^State state next-index match-index])
 

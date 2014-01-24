@@ -57,18 +57,20 @@
       (fact "Append success is false if receiver term is greater than leader's term"
         (append
           (state id 1 nil [] 0 0)
-          (entry 0 (:id node2) 0 0 [] 0)) => {:success false :term 1})
+          (entry 0 (:id node2) 0 0 [] 0)) => {:term 1 :success false :state (state id 1 nil [] 0 0)})
 
       (fact "Append success is true if leader's previous log index is zero"
         (append
           (state id 0 (:id node3) [] 0 0)
-          (entry 0 (:id node3) 0 0 ["Log1"] 0)) => {:success true :term 0})
+          (entry 0 (:id node3) 0 0 ["Log1"] 0)) => {:term 0
+                                                    :success true
+                                                    :state (state id 0 (:id node3) [(entry 0 (:id node3) 0 0 ["Log1"] 0)] 1 0)})
 
       (fact "Append success is false if leader's previous log index is greater than zero
         and greater than length of receiver's log"
         (append
           (state id 0 (:id node3) [] 0 0)
-          (entry 0 (:id node3) 1 0 ["Log1"] 0)) => {:success false :term 0})
+          (entry 0 (:id node3) 1 0 ["Log1"] 0)) => (contains {:term 0 :success false}))
 
       (fact "Append success is false if leader's previous log index is greater than zero,
         less than length of receiver's log, and receiver's term of log entry at leader's
@@ -76,7 +78,7 @@
         (append
           (state id 0 (:id node3) (vector (entry 0 (:id node3) 0 0 ["Log0"] 0)
                                               (entry 0 (:id node3) 1 0 ["Log1"] 0)) 0 0)
-          (entry 1 (:id node3) 1 0 ["Log2"] 0)) => {:success false :term 1})
+          (entry 1 (:id node3) 1 0 ["Log2"] 0)) => (contains {:term 1 :success false}))
 
       (fact "Append success is true if leader's previous log index is greater than zero,
         less than length of receiver's log, and receiver's term of log entry at leader's
@@ -84,4 +86,4 @@
           (append
             (state id 0 (:id node3) (vector (entry 0 (:id node3) 0 0 ["Log0"] 0)
                                                 (entry 0 (:id node3) 1 0 ["Log1"] 0)) 0 0)
-            (entry 0 (:id node3) 1 0 ["Log2"] 0)) => {:success true :term 0}))))
+            (entry 0 (:id node3) 1 0 ["Log2"] 0)) => (contains {:term 0 :success true})))))
