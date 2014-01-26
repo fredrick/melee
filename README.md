@@ -7,7 +7,7 @@ Melee provides distributed system primitives. It is not a database or a messagin
 
 Primary features and goals:
 
-- [Raft consensus](http://raftconsensus.github.io/) for a [CP](http://henryr.github.io/cap-faq/) state machine and replicated log
+- [Raft consensus](http://raftconsensus.github.io/) for a [CP](http://henryr.github.io/cap-faq/) replicated state machine and log
 - Consistent hashing for partitioning
 - CRDTs ([Commutative Replicated Data Types](http://pagesperso-systeme.lip6.fr/Marc.Shapiro/papers/RR-6956.pdf)) for eventually consistent AP data structures
 
@@ -15,6 +15,6 @@ For example, Melee could be used to provide replicated [WAL](http://en.wikipedia
 
 ## License
 
-Copyright © 2013 Fredrick Galoso
+Copyright © 2014 Fredrick Galoso
 
 Distributed under the Eclipse Public License, the same as Clojure.
