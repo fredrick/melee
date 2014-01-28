@@ -51,7 +51,9 @@
       {:term term
         :success accept?
         :state (if accept?
-                 (->State id term voted-for (conj log entry) (inc commit-index) last-applied)
+                 (->State id term voted-for
+                          (concat (remove #(>= (:prev-log-index %) (:prev-log-index entry)) log) [entry])
+                          (min (inc commit-index) (:prev-log-index entry)) last-applied)
                  (->State id term voted-for log commit-index last-applied))})))
 
 (defrecord Leader [^State state next-index match-index])

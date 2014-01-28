@@ -64,7 +64,7 @@
           (state id 0 (:id node3) [] 0 0)
           (entry 0 (:id node3) 0 0 ["Log1"] 0)) => {:term 0
                                                     :success true
-                                                    :state (state id 0 (:id node3) [(entry 0 (:id node3) 0 0 ["Log1"] 0)] 1 0)})
+                                                    :state (state id 0 (:id node3) [(entry 0 (:id node3) 0 0 ["Log1"] 0)] 0 0)})
 
       (fact "Append success is false if leader's previous log index is greater than zero
         and greater than length of receiver's log"
@@ -79,20 +79,33 @@
         previous log index is not equal to leader's previous log term"
         (append
           (state id 0 (:id node3) (vector (entry 0 (:id node3) 0 0 ["Log0"] 0)
-                                          (entry 0 (:id node3) 1 0 ["Log1"] 0)) 0 0)
+                                          (entry 0 (:id node3) 1 0 ["Log1"] 0)) 1 0)
           (entry 1 (:id node3) 1 0 ["Log2"] 0)) => {:term 1
                                                     :success false
                                                     :state (state id 1 (:id node3) (vector (entry 0 (:id node3) 0 0 ["Log0"] 0)
-                                                                                           (entry 0 (:id node3) 1 0 ["Log1"] 0)) 0 0)})
+                                                                                           (entry 0 (:id node3) 1 0 ["Log1"] 0)) 1 0)})
 
       (fact "Append success is true if leader's previous log index is greater than zero,
         less than length of receiver's log, and receiver's term of log entry at leader's
         previous log index is equal to leader's previous log term"
           (append
             (state id 0 (:id node3) (vector (entry 0 (:id node3) 0 0 ["Log0"] 0)
-                                            (entry 0 (:id node3) 1 0 ["Log1"] 0)) 1 0)
+                                            (entry 0 (:id node3) 0 0 ["Log1"] 0)) 1 0)
             (entry 0 (:id node3) 1 0 ["Log2"] 0)) => {:term 0
                                                       :success true
                                                       :state (state id 0 (:id node3) (vector (entry 0 (:id node3) 0 0 ["Log0"] 0)
-                                                                                             (entry 0 (:id node3) 1 0 ["Log1"] 0)
-                                                                                             (entry 0 (:id node3) 1 0 ["Log2"] 0)) 2 0)}))))
+                                                                                             (entry 0 (:id node3) 0 0 ["Log1"] 0)
+                                                                                             (entry 0 (:id node3) 1 0 ["Log2"] 0)) 1 0)})
+
+      (fact "If an existing entry conflicts with a new one (same index but different terms),
+        delete the existing entry and all that follow it."
+          (append
+            (state id 0 (:id node3) (vector (entry 0 (:id node3) 0 0 ["Log0"] 0)
+                                            (entry 0 (:id node3) 0 0 ["Log1"] 0)
+                                            (entry 1 (:id node3) 1 0 ["Log2"] 0)
+                                            (entry 1 (:id node3) 2 0 ["Log3"] 0)) 2 0)
+            (entry 0 (:id node3) 1 0 ["Log1b"] 0)) => {:term 0
+                                                       :success true
+                                                       :state (state id 0 (:id node3) (vector (entry 0 (:id node3) 0 0 ["Log0"] 0)
+                                                                                              (entry 0 (:id node3) 0 0 ["Log1"] 0)
+                                                                                              (entry 0 (:id node3) 1 0 ["Log1b"] 0)) 1 0)}))))
