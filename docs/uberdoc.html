@@ -3079,7 +3079,8 @@ major pieces needed for practical systems.</p>
         :success accept?
         :state (if accept?
                  (-&gt;State id term voted-for
-                          (concat (remove #(&gt;= (:prev-log-index %) (:prev-log-index entry)) log) [entry])
+                          (concat (remove #(and (&gt;= (:prev-log-index %) (:prev-log-index entry))
+                                                (&gt; (:prev-log-index %) commit-index)) log) [entry])
                           (min (inc commit-index) (:prev-log-index entry)) last-applied)
                  (-&gt;State id term voted-for log commit-index last-applied))})))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defrecord Leader [^State state next-index match-index])</pre></td></tr><tr><td class="docs"><p>Ballot for leader election.</p>

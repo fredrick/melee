@@ -52,7 +52,8 @@
         :success accept?
         :state (if accept?
                  (->State id term voted-for
-                          (concat (remove #(>= (:prev-log-index %) (:prev-log-index entry)) log) [entry])
+                          (concat (remove #(and (>= (:prev-log-index %) (:prev-log-index entry))
+                                                (> (:prev-log-index %) commit-index)) log) [entry])
                           (min (inc commit-index) (:prev-log-index entry)) last-applied)
                  (->State id term voted-for log commit-index last-applied))})))
 
