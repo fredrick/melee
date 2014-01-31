@@ -3184,6 +3184,10 @@ major pieces needed for practical systems.</p>
   (add [this node] &quot;Adds node.&quot;)
   (delete [this node] &quot;Deletes node.&quot;)
   (lookup [this object] &quot;Finds node to use for object.&quot;))</pre></td></tr><tr><td class="docs"><h2>Consistent Hashing</h2>
+
+<p>Consistent hashing is a technique used to limit the reshuffling of keys
+when a hash-table data structure is rebalanced (when slots are added
+or removed).</p>
 </td><td class="codes"></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defn- allocate [node replicas]
   (map #(hash-map (hash-&gt;long (hash-object (murmur3-128 %) node)) node)
