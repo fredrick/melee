@@ -1,6 +1,11 @@
 (ns melee.log
   (:import (clojure.lang IPersistentVector)))
 
+;;; ## Log
+;;;
+;;; Replicated command log
+;;;
+
 (defprotocol Log
   (start-index
     [this]

@@ -11,7 +11,7 @@
 ;;; Consistent hashing is a technique used to limit the reshuffling of keys
 ;;; when a hash-table data structure is rebalanced (when slots are added
 ;;; or removed).
-;;; 
+;;;
 
 (defn- allocate [node replicas]
   (map #(hash-map (hash->long (hash-object (murmur3-128 %) node)) node)
