@@ -31,7 +31,7 @@
   (vote [this ballot]
     (let [log-is-current? (or (> (:last-log-term ballot) (last-term log))
                               (and (= (:last-log-term ballot) (last-term log))
-                                   (>= (:last-log-index ballot) (last-index log))))
+                                   (>= (:last-log-index ballot) (count log))))
           term (max (:term ballot) current-term)
           grant? (and (= (:term ballot) current-term)
                       log-is-current?
@@ -47,15 +47,20 @@
                       (or (zero? (:prev-log-index entry))
                           (and (> (:prev-log-index entry) 0)
                                (<= (:prev-log-index entry) (count log))
-                               (= (:prev-log-term entry) (:term (nth log (:prev-log-index entry)))))))]
+                               (= (:prev-log-term entry) (:term (nth log (:prev-log-index entry)))))))
+          index (inc (:prev-log-index entry))]
       {:term term
-        :success accept?
-        :state (if accept?
-                 (->State id term voted-for
-                          (concat (remove #(and (>= (:prev-log-index %) (:prev-log-index entry))
-                                                (> (:prev-log-index %) commit-index)) log) [entry])
-                          (min (inc commit-index) (:prev-log-index entry)) last-applied)
-                 (->State id term voted-for log commit-index last-applied))})))
+       :success accept?
+       :state (if accept?
+                (->State id term voted-for
+                         (concat (remove #(and (>= (:prev-log-index %) (:prev-log-index entry))
+                                               (> (:prev-log-index %) commit-index)) log) [entry])
+                         (if (or (empty? (:entries entry))
+                                 (and (> (count log) index)
+                                      (= (:term (nth log index)) (:term (first (:entries entry))))))
+                           (inc commit-index)
+                           commit-index) last-applied)
+                (->State id term voted-for log commit-index last-applied))})))
 
 (defrecord Leader [^State state next-index match-index])
 

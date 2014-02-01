@@ -90,12 +90,13 @@
         previous log index is equal to leader's previous log term"
           (append
             (:state (append
-                      (state id 0 (:id node3) [] 0 0)
-                      (entry 0 (:id node3) 0 0 ["Log0"] 0)))
-            (entry 0 (:id node3) 0 0 ["Log1"] 0)) => {:term 0
+                      (state id 0 (:id node3) [(entry 0 (:id node3) 0 0 [] 0)] 0 0)
+                      (entry 0 (:id node3) 0 0 ["Log1"] 0)))
+            (entry 0 (:id node3) 1 0 ["Log2"] 1)) => {:term 0
                                                       :success true
-                                                      :state (state id 0 (:id node3) [(entry 0 (:id node3) 0 0 ["Log0"] 0)
-                                                                                      (entry 0 (:id node3) 0 0 ["Log1"] 0)] 0 0)})
+                                                      :state (state id 0 (:id node3) [(entry 0 (:id node3) 0 0 [] 0)
+                                                                                      (entry 0 (:id node3) 0 0 ["Log1"] 0)
+                                                                                      (entry 0 (:id node3) 1 0 ["Log2"] 1)] 0 0)})
 
       (fact "If an existing entry conflicts with a new one (same index but different terms),
         delete the existing entry and all that follow it."
@@ -108,4 +109,4 @@
                                                        :success true
                                                        :state (state id 0 (:id node3) [(entry 0 (:id node3) 0 0 ["Log0"] 0)
                                                                                        (entry 0 (:id node3) 0 0 ["Log1"] 0)
-                                                                                       (entry 0 (:id node3) 1 0 ["Log1b"] 0)] 1 0)}))))
+                                                                                       (entry 0 (:id node3) 1 0 ["Log1b"] 0)] 0 0)}))))
