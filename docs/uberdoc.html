@@ -3174,12 +3174,16 @@ major pieces needed for practical systems.</p>
   (last-term
     [this]
     &quot;Returns last log term.&quot;))</pre></td></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(defn- index-of [log element]
+  (if (or (empty? log)
+          (and (= (count log) 1)
+               (= (:prev-log-index (first log)) 0)))
+    0
+    (inc (:prev-log-index element))))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(extend-protocol Log
   IPersistentVector
-  (start-index [this]
-    (if (empty? this) 0 (:prev-log-index (first this))))
-  (last-index [this]
-    (if (empty? this) 0 (:prev-log-index (last this))))
+  (start-index [this] (index-of this (first this)))
+  (last-index [this] (index-of this (last this)))
   (last-term [this]
     (if (empty? this) 0 (:term (last this)))))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defrecord Entry [^Number term leader-id ^Number prev-log-index ^Number prev-log-term entries ^Number leader-commit])</pre></td></tr><tr><td class="docs"><p>Entry for log.</p>

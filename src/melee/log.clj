@@ -17,12 +17,17 @@
     [this]
     "Returns last log term."))
 
+(defn- index-of [log element]
+  (if (or (empty? log)
+          (and (= (count log) 1)
+               (= (:prev-log-index (first log)) 0)))
+    0
+    (inc (:prev-log-index element))))
+
 (extend-protocol Log
   IPersistentVector
-  (start-index [this]
-    (if (empty? this) 0 (:prev-log-index (first this))))
-  (last-index [this]
-    (if (empty? this) 0 (:prev-log-index (last this))))
+  (start-index [this] (index-of this (first this)))
+  (last-index [this] (index-of this (last this)))
   (last-term [this]
     (if (empty? this) 0 (:term (last this)))))
 
