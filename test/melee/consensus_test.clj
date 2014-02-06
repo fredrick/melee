@@ -88,17 +88,21 @@
       (fact "Append success is true if leader's previous log index is greater than zero,
         less than length of receiver's log, and receiver's term of log entry at leader's
         previous log index is equal to leader's previous log term"
-          (append (:state (append
-                    (:state (append
-                              (state id 0 (:id node3) [(entry 0 (:id node3) 0 0 [] 0)] 0 0)
-                              (entry 0 (:id node3) 0 0 ["Log1"] 0)))
-                    (entry 0 (:id node3) 1 0 ["Log2"] 1)))
-                  (entry 0 (:id node3) 2 0 ["Log3"] 2)) => {:term 0
-                                                      :success true
-                                                      :state (state id 0 (:id node3) [(entry 0 (:id node3) 0 0 [] 0)
-                                                                                      (entry 0 (:id node3) 0 0 ["Log1"] 0)
-                                                                                      (entry 0 (:id node3) 1 0 ["Log2"] 1)
-                                                                                      (entry 0 (:id node3) 2 0 ["Log3"] 2)] 0 0)})
+          (append
+            (:state (append
+                      (:state (append
+                                (:state (append
+                                          (state id 0 (:id node3) [(entry 0 (:id node3) 0 0 [] 0)] 0 0)
+                                          (entry 0 (:id node3) 0 0 ["Log1"] 0)))
+                                (entry 0 (:id node3) 1 0 ["Log2"] 1)))
+                      (entry 0 (:id node3) 2 0 ["Log3"] 2)))
+            (entry 0 (:id node3) 3 0 [] 3)) => {:term 0
+                                                :success true
+                                                :state (state id 0 (:id node3) [(entry 0 (:id node3) 0 0 [] 0)
+                                                                                (entry 0 (:id node3) 0 0 ["Log1"] 0)
+                                                                                (entry 0 (:id node3) 1 0 ["Log2"] 1)
+                                                                                (entry 0 (:id node3) 2 0 ["Log3"] 2)
+                                                                                (entry 0 (:id node3) 3 0 [] 3)] 1 0)})
 
       (fact "If an existing entry conflicts with a new one (same index but different terms),
         delete the existing entry and all that follow it."
