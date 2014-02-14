@@ -8,7 +8,7 @@
   :profiles {:dev { :dependencies [[org.clojure/tools.namespace "0.2.4"]
                                    [org.clojure/tools.nrepl "0.2.3"]
                                    [org.clojure/java.classpath "0.2.2"]
-                                   [midje "1.6.0"]
+                                   [midje "1.6.2"]
                                    [bultitude "0.2.5"]]
                     :plugins [[lein-midje "3.1.1"]
                               [lein-marginalia "0.7.1"]]}}
