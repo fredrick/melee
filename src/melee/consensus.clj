@@ -53,16 +53,14 @@
        :success accept?
        :state (if accept?
                 (->State id term voted-for
-                         (concat (remove #(and (>= (:prev-log-index %) (:prev-log-index entry))
-                                               (> (:prev-log-index %) commit-index)) log) [entry])
+                         (vec (concat (remove #(and (>= (:prev-log-index %) (:prev-log-index entry))
+                                                    (> (:prev-log-index %) commit-index)) log) [entry]))
                          (if (or (empty? (:entries entry))
                                  (and (>= (count log) index)
                                       (= (:term (nth log (:prev-log-index entry))) (:term entry))))
                            (inc commit-index)
                            commit-index) last-applied)
                 (->State id term voted-for log commit-index last-applied))})))
-
-(defrecord Leader [^State state next-index match-index])
 
 (defn ballot
   "Ballot for leader election."
@@ -73,8 +71,3 @@
   "State for node."
   [id ^Number current-term voted-for ^IPersistentVector log ^Number commit-index ^Number last-applied]
   (->State id current-term voted-for log commit-index last-applied))
-
-(defn leader
-  "Leader from state."
-  [^State state next-index match-index]
-  (->Leader state next-index match-index))

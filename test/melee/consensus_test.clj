@@ -17,11 +17,6 @@
                          :commit-index 0
                          :last-applied 0}))
 
-    (fact "Start leader state"
-      (leader node1 {} {}) => (contains {:state node1
-                                       :next-index {}
-                                       :match-index {}}))
-
     (facts "HandleRequestVoteRequest"
       (fact "Vote response has current term"
         (vote
