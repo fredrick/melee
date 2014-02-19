@@ -3183,7 +3183,10 @@ major pieces needed for practical systems.</p>
     &quot;Synchronize journal.&quot;)
   (compact
     [this]
-    &quot;Compact journal.&quot;))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#melee.log" name="melee.log"><h1 class="project-name">melee.log</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
+    &quot;Compact journal.&quot;))</pre></td></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(extend-protocol Journal
+  journal.io.api.Journal
+  (journal [this directory] (.open (.journal.io.api.Journal directory))))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#melee.log" name="melee.log"><h1 class="project-name">melee.log</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(ns melee.log
   (:import (clojure.lang IPersistentVector)))</pre></td></tr><tr><td class="docs"><h2>Log</h2>
 

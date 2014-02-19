@@ -30,3 +30,7 @@
   (compact
     [this]
     "Compact journal."))
+
+(extend-protocol Journal
+  journal.io.api.Journal
+  (journal [this directory] (.open (.journal.io.api.Journal directory))))
