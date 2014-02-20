@@ -1,4 +1,4 @@
-(ns melee.log_test
+(ns melee.log-test
   (:use [melee.core]
         [melee.log]
         [midje.sweet]))

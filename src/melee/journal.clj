@@ -1,4 +1,5 @@
-(ns melee.journal)
+(ns melee.journal
+  (:import (journal.io.api JournalBuilder)))
 
 ;;; ## Journal
 ;;;
@@ -6,9 +7,6 @@
 ;;;
 
 (defprotocol Journal
-  (journal
-    [this directory]
-    "Returns durable journal.")
   (write
     [this record write-type]
     "Writes record to journal.")
@@ -31,6 +29,4 @@
     [this]
     "Compact journal."))
 
-(extend-protocol Journal
-  journal.io.api.Journal
-  (journal [this directory] (.open (.journal.io.api.Journal directory))))
+(defn journal [directory] (.open (JournalBuilder/of directory)))

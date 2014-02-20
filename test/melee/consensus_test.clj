@@ -1,4 +1,4 @@
-(ns melee.consensus_test
+(ns melee.consensus-test
   (:use [melee.core]
         [melee.consensus]
         [melee.log]
