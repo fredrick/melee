@@ -3158,7 +3158,7 @@ major pieces needed for practical systems.</p>
 </td><td class="codes"><pre class="brush: clojure">(ns melee.journal
   (:import (journal.io.api JournalBuilder)))</pre></td></tr><tr><td class="docs"><h2>Journal</h2>
 
-<p>Durable journal storage</p>
+<p>Durable journal storage.</p>
 </td><td class="codes"></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defprotocol Journal
   (write
@@ -3170,23 +3170,30 @@ major pieces needed for practical systems.</p>
   (undo
     [this]
     &quot;Returns backward-replay seq of journal locations.&quot;)
-  (read
+  (fetch
     [this location read-type]
     &quot;Returns record from journal.&quot;)
   (delete
     [this location]
     &quot;Deletes journal location.&quot;)
-  (sync
+  (save
     [this]
-    &quot;Synchronize journal.&quot;)
+    &quot;Synchronizes journal.&quot;)
   (compact
     [this]
-    &quot;Compact journal.&quot;))</pre></td></tr><tr><td class="docs">
-</td><td class="codes"><pre class="brush: clojure">(defn journal [directory] (.open (JournalBuilder/of directory)))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#melee.log" name="melee.log"><h1 class="project-name">melee.log</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
+    &quot;Compacts journal.&quot;)
+  (close
+    [this]
+    &quot;Closes journal.&quot;))</pre></td></tr><tr><td class="docs"><p>Returns new journal for append-only rotating log storage.</p>
+</td><td class="codes"><pre class="brush: clojure">(defn journal
+  ^journal.io.api.Journal [directory] (.open (JournalBuilder/of directory)))</pre></td></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(extend-protocol Journal
+  journal.io.api.Journal
+  (close [this] (.close this)))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#melee.log" name="melee.log"><h1 class="project-name">melee.log</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(ns melee.log
   (:import (clojure.lang IPersistentVector)))</pre></td></tr><tr><td class="docs"><h2>Log</h2>
 
-<p>Replicated command log</p>
+<p>Replicated command log.</p>
 </td><td class="codes"></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defprotocol Log
   (start-index

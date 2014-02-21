@@ -3,7 +3,7 @@
 
 ;;; ## Journal
 ;;;
-;;; Durable journal storage
+;;; Durable journal storage.
 ;;;
 
 (defprotocol Journal
@@ -16,17 +16,26 @@
   (undo
     [this]
     "Returns backward-replay seq of journal locations.")
-  (read
+  (fetch
     [this location read-type]
     "Returns record from journal.")
   (delete
     [this location]
     "Deletes journal location.")
-  (sync
+  (save
     [this]
-    "Synchronize journal.")
+    "Synchronizes journal.")
   (compact
     [this]
-    "Compact journal."))
+    "Compacts journal.")
+  (close
+    [this]
+    "Closes journal."))
 
-(defn journal [directory] (.open (JournalBuilder/of directory)))
+(defn journal
+  "Returns new journal for append-only rotating log storage."
+  ^journal.io.api.Journal [directory] (.open (JournalBuilder/of directory)))
+
+(extend-protocol Journal
+  journal.io.api.Journal
+  (close [this] (.close this)))

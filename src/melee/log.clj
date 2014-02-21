@@ -3,7 +3,7 @@
 
 ;;; ## Log
 ;;;
-;;; Replicated command log
+;;; Replicated command log.
 ;;;
 
 (defprotocol Log
