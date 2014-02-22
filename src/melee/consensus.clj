@@ -45,7 +45,7 @@
     (let [term (max (:term entry) current-term)
           accept? (and (= (:term entry) current-term)
                       (or (zero? (:prev-log-index entry))
-                          (and (> (:prev-log-index entry) 0)
+                          (and (pos? (:prev-log-index entry))
                                (<= (:prev-log-index entry) (count log))
                                (= (:prev-log-term entry) (:term (nth log (:prev-log-index entry)))))))
           index (inc (:prev-log-index entry))]

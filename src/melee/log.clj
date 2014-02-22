@@ -20,7 +20,7 @@
 (defn- index-of [log element]
   (if (or (empty? log)
           (and (= (count log) 1)
-               (= (:prev-log-index (first log)) 0)))
+               (zero? (:prev-log-index (first log)))))
     0
     (inc (:prev-log-index element))))
 

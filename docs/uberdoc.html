@@ -3072,7 +3072,7 @@ major pieces needed for practical systems.</p>
     (let [term (max (:term entry) current-term)
           accept? (and (= (:term entry) current-term)
                       (or (zero? (:prev-log-index entry))
-                          (and (&gt; (:prev-log-index entry) 0)
+                          (and (pos? (:prev-log-index entry))
                                (&lt;= (:prev-log-index entry) (count log))
                                (= (:prev-log-term entry) (:term (nth log (:prev-log-index entry)))))))
           index (inc (:prev-log-index entry))]
@@ -3128,7 +3128,7 @@ major pieces needed for practical systems.</p>
 </td><td class="codes"><pre class="brush: clojure">(defn hash-&gt;long
   [^HashCode hashcode] (.asLong hashcode))</pre></td></tr><tr><td class="docs"><p>Converts a HashCode to a string.</p>
 </td><td class="codes"><pre class="brush: clojure">(defn hash-&gt;string
-  [^HashCode hashcode] (.toString hashcode))</pre></td></tr><tr><td class="docs"><p>Converts a byte array to a HashCode.</p>
+  [^HashCode hashcode] (str hashcode))</pre></td></tr><tr><td class="docs"><p>Converts a byte array to a HashCode.</p>
 </td><td class="codes"><pre class="brush: clojure">(defn bytes-&gt;hash
   [bytes] (HashCode/fromBytes bytes))</pre></td></tr><tr><td class="docs"><p>Converts an int to a HashCode.</p>
 </td><td class="codes"><pre class="brush: clojure">(defn int-&gt;hash
@@ -3208,7 +3208,7 @@ major pieces needed for practical systems.</p>
 </td><td class="codes"><pre class="brush: clojure">(defn- index-of [log element]
   (if (or (empty? log)
           (and (= (count log) 1)
-               (= (:prev-log-index (first log)) 0)))
+               (zero? (:prev-log-index (first log)))))
     0
     (inc (:prev-log-index element))))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(extend-protocol Log

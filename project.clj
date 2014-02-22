@@ -12,5 +12,7 @@
                                    [midje "1.6.2"]
                                    [bultitude "0.2.5"]]
                     :plugins [[lein-midje "3.1.1"]
-                              [lein-marginalia "0.7.1"]]}}
+                              [lein-marginalia "0.7.1"]
+                              [lein-kibit "0.0.8"]
+                              [lein-bikeshed "0.1.6"]]}}
   :global-vars {*warn-on-reflection* true})

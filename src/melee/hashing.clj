@@ -58,7 +58,7 @@
 
 (defn hash->string
   "Converts a HashCode to a string."
-  [^HashCode hashcode] (.toString hashcode))
+  [^HashCode hashcode] (str hashcode))
 
 (defn bytes->hash
   "Converts a byte array to a HashCode."
