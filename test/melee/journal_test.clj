@@ -1,5 +1,5 @@
 (ns melee.journal-test
-  (:import (journal.io.api Journal$WriteType Journal$ReadType))
+  (:import (journal.io.api Journal$WriteType Journal$ReadType Location))
   (:use [clojure.java.io :only [file]]
         [melee.journal]
         [midje.sweet]))
@@ -15,4 +15,10 @@
     (:sync read-type) => Journal$ReadType/SYNC)
   (with-open [journal (journal (file "test"))]
     (fact "Create journal"
-      journal => truthy)))
+      (instance? journal.io.api.Journal journal) => true)
+    (fact "Write record to journal"
+      (instance? Location (write journal
+                                 (.getBytes "record" "utf8")
+                                 (:sync write-type))))
+    (fact "Replay from journal"
+      (seq? (redo journal)) => true)))

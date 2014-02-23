@@ -3193,6 +3193,8 @@ major pieces needed for practical systems.</p>
   ^journal.io.api.Journal [directory] (.open (JournalBuilder/of directory)))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(extend-protocol Journal
   journal.io.api.Journal
+  (write [this record write-type] (.write this record write-type))
+  (redo [this] (seq (.redo this)))
   (close [this] (.close this)))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#melee.log" name="melee.log"><h1 class="project-name">melee.log</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(ns melee.log
   (:import (clojure.lang IPersistentVector)))</pre></td></tr><tr><td class="docs"><h2>Log</h2>

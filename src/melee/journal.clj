@@ -44,4 +44,6 @@
 
 (extend-protocol Journal
   journal.io.api.Journal
+  (write [this record write-type] (.write this record write-type))
+  (redo [this] (seq (.redo this)))
   (close [this] (.close this)))
