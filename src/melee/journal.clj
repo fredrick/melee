@@ -1,5 +1,5 @@
 (ns melee.journal
-  (:import (journal.io.api JournalBuilder Journal$WriteType)))
+  (:import (journal.io.api JournalBuilder Journal$WriteType Journal$ReadType)))
 
 ;;; ## Journal
 ;;;
@@ -8,6 +8,9 @@
 
 (def write-type {:async Journal$WriteType/ASYNC,
                  :sync Journal$WriteType/SYNC})
+
+(def read-type {:async Journal$ReadType/ASYNC,
+                :sync Journal$ReadType/SYNC})
 
 (defprotocol Journal
   (write
