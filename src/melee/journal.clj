@@ -1,10 +1,13 @@
 (ns melee.journal
-  (:import (journal.io.api JournalBuilder)))
+  (:import (journal.io.api JournalBuilder Journal$WriteType)))
 
 ;;; ## Journal
 ;;;
 ;;; Durable journal storage.
 ;;;
+
+(def write-type {:async Journal$WriteType/ASYNC,
+                 :sync Journal$WriteType/SYNC})
 
 (defprotocol Journal
   (write

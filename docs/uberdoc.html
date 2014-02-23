@@ -3156,10 +3156,12 @@ major pieces needed for practical systems.</p>
   ([^HashFunction hash-function object]
     (hash-string hash-function (binding [*print-dup* true] (pr-str object)))))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#melee.journal" name="melee.journal"><h1 class="project-name">melee.journal</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(ns melee.journal
-  (:import (journal.io.api JournalBuilder)))</pre></td></tr><tr><td class="docs"><h2>Journal</h2>
+  (:import (journal.io.api JournalBuilder Journal$WriteType)))</pre></td></tr><tr><td class="docs"><h2>Journal</h2>
 
 <p>Durable journal storage.</p>
 </td><td class="codes"></td></tr><tr><td class="docs">
+</td><td class="codes"><pre class="brush: clojure">(def write-type {:async Journal$WriteType/ASYNC,
+                 :sync Journal$WriteType/SYNC})</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defprotocol Journal
   (write
     [this record write-type]
