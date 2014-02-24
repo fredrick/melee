@@ -3186,6 +3186,9 @@ major pieces needed for practical systems.</p>
   (compact
     [this]
     &quot;Compacts journal.&quot;)
+  (truncate
+    [this]
+    &quot;Truncates journal.&quot;)
   (close
     [this]
     &quot;Closes journal.&quot;))</pre></td></tr><tr><td class="docs"><p>Returns new journal for append-only rotating log storage.</p>
@@ -3195,6 +3198,12 @@ major pieces needed for practical systems.</p>
   journal.io.api.Journal
   (write [this record write-type] (.write this record write-type))
   (redo [this] (seq (.redo this)))
+  (undo [this] (seq (.undo this)))
+  (fetch [this location read-type] (.read this location read-type))
+  (delete [this location] (.delete this location))
+  (save [this] (.sync this))
+  (compact [this] (.compact this))
+  (truncate [this] (.truncate this))
   (close [this] (.close this)))</pre></td></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr><tr><td class="docs"><div class="docs-header"><a class="anchor" href="#melee.log" name="melee.log"><h1 class="project-name">melee.log</h1><a class="toc-link" href="#toc">toc</a></a></div></td><td class="codes" /></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(ns melee.log
   (:import (clojure.lang IPersistentVector)))</pre></td></tr><tr><td class="docs"><h2>Log</h2>

@@ -34,6 +34,9 @@
   (compact
     [this]
     "Compacts journal.")
+  (truncate
+    [this]
+    "Truncates journal.")
   (close
     [this]
     "Closes journal."))
@@ -46,4 +49,10 @@
   journal.io.api.Journal
   (write [this record write-type] (.write this record write-type))
   (redo [this] (seq (.redo this)))
+  (undo [this] (seq (.undo this)))
+  (fetch [this location read-type] (.read this location read-type))
+  (delete [this location] (.delete this location))
+  (save [this] (.sync this))
+  (compact [this] (.compact this))
+  (truncate [this] (.truncate this))
   (close [this] (.close this)))

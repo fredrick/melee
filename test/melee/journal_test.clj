@@ -1,5 +1,6 @@
 (ns melee.journal-test
-  (:import (journal.io.api Journal$WriteType Journal$ReadType Location))
+  (:import (journal.io.api Journal$WriteType Journal$ReadType Location OpenJournalException)
+           (java.io IOException))
   (:use [clojure.java.io :only [file]]
         [melee.journal]
         [midje.sweet]))
@@ -20,5 +21,28 @@
       (instance? Location (write journal
                                  (.getBytes "record" "utf8")
                                  (:sync write-type))))
-    (fact "Replay from journal"
-      (seq? (redo journal)) => true)))
+    (fact "Forward replay from journal"
+      (seq? (redo journal)) => true)
+    (fact "Backward replay from journal"
+      (seq? (undo journal)) => true)
+    (fact "Fetch record from location"
+      (let [location (write journal
+                           (.getBytes "record" "utf8")
+                           (:sync write-type))]
+        (String. (fetch journal location (:sync read-type))) => "record"))
+    (fact "Delete location from journal"
+      (let [location (write journal
+                            (.getBytes "record" "utf8")
+                            (:sync write-type))]
+        (delete journal location)
+        (fetch journal location (:sync read-type)) => (throws IOException)))
+    (fact "Synchronize journal"
+      (save journal))
+    (fact "Compact journal"
+      (compact journal))
+    (fact "Truncate journal"
+      (truncate journal) => (throws OpenJournalException)
+      (close journal)
+      (truncate journal))
+    (fact "Close journal"
+      (close journal))))
