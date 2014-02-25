@@ -23,8 +23,24 @@
                                  (:sync write-type))))
     (fact "Forward replay from journal"
       (seq? (redo journal)) => true)
+    (fact "Forward replay from journal after location"
+      (let [start (write journal
+                         (.getBytes "record" "utf8")
+                         (:sync write-type))
+            next (write journal
+                        (.getBytes "record" "utf8")
+                        (:sync write-type))]
+        (seq? (redo journal start)) => true))
     (fact "Backward replay from journal"
       (seq? (undo journal)) => true)
+    (fact "Backward replay from journal before location"
+      (let [start (write journal
+                         (.getBytes "record" "utf8")
+                         (:sync write-type))
+            next (write journal
+                        (.getBytes "record" "utf8")
+                        (:sync write-type))]
+        (seq? (undo journal next)) => true))
     (fact "Fetch record from location"
       (let [location (write journal
                            (.getBytes "record" "utf8")

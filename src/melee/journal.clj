@@ -18,9 +18,11 @@
     "Writes record to journal.")
   (redo
     [this]
+    [this start]
     "Returns forward-replay seq of journal locations.")
   (undo
     [this]
+    [this end]
     "Returns backward-replay seq of journal locations.")
   (fetch
     [this location read-type]
@@ -48,8 +50,12 @@
 (extend-protocol Journal
   journal.io.api.Journal
   (write [this record write-type] (.write this record write-type))
-  (redo [this] (seq (.redo this)))
-  (undo [this] (seq (.undo this)))
+  (redo
+    ([this] (seq (.redo this)))
+    ([this start] (seq (.redo this start))))
+  (undo
+    ([this] (seq (.undo this)))
+    ([this end] (seq (.undo this end))))
   (fetch [this location read-type] (.read this location read-type))
   (delete [this location] (.delete this location))
   (save [this] (.sync this))
