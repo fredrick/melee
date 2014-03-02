@@ -15,6 +15,9 @@
   (fact "Sync read type"
     (:sync read-type) => Journal$ReadType/SYNC)
   (with-open [journal (journal (file "test"))]
+    (fact "Open journal"
+      (open journal)
+      (instance? journal.io.api.Journal journal) => true)
     (fact "Create journal"
       (instance? journal.io.api.Journal journal) => true)
     (fact "Write record to journal"

@@ -3165,6 +3165,9 @@ major pieces needed for practical systems.</p>
 </td><td class="codes"><pre class="brush: clojure">(def read-type {:async Journal$ReadType/ASYNC,
                 :sync Journal$ReadType/SYNC})</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defprotocol Journal
+  (open
+    [this]
+    &quot;Opens journal.&quot;)
   (write
     [this record write-type]
     &quot;Writes record to journal.&quot;)
@@ -3198,6 +3201,7 @@ major pieces needed for practical systems.</p>
   ^journal.io.api.Journal [directory] (.open (JournalBuilder/of directory)))</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(extend-protocol Journal
   journal.io.api.Journal
+  (open [this] (.open this))
   (write [this record write-type] (.write this record write-type))
   (redo
     ([this] (seq (.redo this)))

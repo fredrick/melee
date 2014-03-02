@@ -13,6 +13,9 @@
                 :sync Journal$ReadType/SYNC})
 
 (defprotocol Journal
+  (open
+    [this]
+    "Opens journal.")
   (write
     [this record write-type]
     "Writes record to journal.")
@@ -49,6 +52,7 @@
 
 (extend-protocol Journal
   journal.io.api.Journal
+  (open [this] (.open this))
   (write [this record write-type] (.write this record write-type))
   (redo
     ([this] (seq (.redo this)))
