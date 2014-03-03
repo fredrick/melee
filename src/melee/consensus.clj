@@ -26,7 +26,7 @@
 
 (defrecord Ballot [^Number term candidate-id ^Number last-log-index ^Number last-log-term])
 
-(defrecord State [id ^Number current-term voted-for ^IPersistentVector log ^Number commit-index ^Number last-applied]
+(defrecord State [id role ^Number current-term voted-for ^IPersistentVector log ^Number commit-index ^Number last-applied]
   Consensus
   (vote [this ballot]
     (let [log-is-current? (or (> (:last-log-term ballot) (last-term log))
@@ -39,8 +39,8 @@
       {:term term
        :vote-granted grant?
        :state (if (and grant? (nil? voted-for))
-                (->State id term (:candidate-id ballot) log commit-index last-applied)
-                (->State id term voted-for log commit-index last-applied))}))
+                (->State id role term (:candidate-id ballot) log commit-index last-applied)
+                (->State id role term voted-for log commit-index last-applied))}))
   (append [this entry]
     (let [term (max (:term entry) current-term)
           accept? (and (= (:term entry) current-term)
@@ -52,7 +52,7 @@
       {:term term
        :success accept?
        :state (if accept?
-                (->State id term voted-for
+                (->State id role term voted-for
                          (vec (concat (remove #(and (>= (:prev-log-index %) (:prev-log-index entry))
                                                     (> (:prev-log-index %) commit-index)) log) [entry]))
                          (if (or (empty? (:entries entry))
@@ -60,7 +60,7 @@
                                       (= (:term (nth log (:prev-log-index entry))) (:term entry))))
                            (inc commit-index)
                            commit-index) last-applied)
-                (->State id term voted-for log commit-index last-applied))})))
+                (->State id role term voted-for log commit-index last-applied))})))
 
 (defn ballot
   "Ballot for leader election."
@@ -69,5 +69,5 @@
 
 (defn state
   "State for node."
-  [id ^Number current-term voted-for ^IPersistentVector log ^Number commit-index ^Number last-applied]
-  (->State id current-term voted-for log commit-index last-applied))
+  [id role ^Number current-term voted-for ^IPersistentVector log ^Number commit-index ^Number last-applied]
+  (->State id role current-term voted-for log commit-index last-applied))
