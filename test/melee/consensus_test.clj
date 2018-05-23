@@ -1,17 +1,14 @@
 (ns melee.consensus-test
-  (:use [clojure.java.io :only [file]]
-        [melee.core]
+  (:use [melee.core]
         [melee.consensus]
         [melee.log]
-        [melee.journal]
         [midje.sweet]))
 
 (facts "Raft consensus"
   (let [id (uuid)
-        journal (journal (file "test"))
-        node1 (state id :follower 0 nil [] journal 0 0)
-        node2 (state (uuid) :follower 0 nil [] journal 0 0)
-        node3 (state (uuid) :follower 0 nil [] journal 0 0)]
+        node1 (state id :follower 0 nil [] 0 0)
+        node2 (state (uuid) :follower 0 nil [] 0 0)
+        node3 (state (uuid) :follower 0 nil [] 0 0)]
     (fact "Start state"
       node1 => (contains {:id id
                          :current-term 0
@@ -28,23 +25,23 @@
 
       (fact "Vote not granted if voter term is greater than candidate term"
         (vote
-          (state id :follower 1 nil [] journal 0 0)
-          (ballot 0 (:id node3) 0 0)) => {:term 1 :vote-granted false :state (state id :follower 1 nil [] journal 0 0)})
+          (state id :follower 1 nil [] 0 0)
+          (ballot 0 (:id node3) 0 0)) => {:term 1 :vote-granted false :state (state id :follower 1 nil [] 0 0)})
 
       (fact "Vote not granted if voted-for not nil and not equal to candidate id"
         (vote
-          (state id :follower 0 (:id node2) [] journal 0 0)
-          (ballot 0 (:id node3) 0 0)) => {:term 0 :vote-granted false :state (state id :follower 0 (:id node2) [] journal 0 0)})
+          (state id :follower 0 (:id node2) [] 0 0)
+          (ballot 0 (:id node3) 0 0)) => {:term 0 :vote-granted false :state (state id :follower 0 (:id node2) [] 0 0)})
 
       (fact "Vote granted if voted-for is nil and candidate's log is equivalent to receiver's log"
         (vote
-          (state id :follower 1 nil [] journal 0 0)
-          (ballot 1 (:id node3) 0 0)) => {:term 1 :vote-granted true :state (state id :follower 1 (:id node3) [] journal 0 0)})
+          (state id :follower 1 nil [] 0 0)
+          (ballot 1 (:id node3) 0 0)) => {:term 1 :vote-granted true :state (state id :follower 1 (:id node3) [] 0 0)})
 
       (fact "Vote granted if voted-for is equivalent to candidate and candidate's log is equivalent to receiver's log"
         (vote
-          (state id :follower 1 (:id node3) [] journal 0 0)
-          (ballot 1 (:id node3) 0 0)) => {:term 1 :vote-granted true :state (state id :follower 1 (:id node3) [] journal 0 0)}))
+          (state id :follower 1 (:id node3) [] 0 0)
+          (ballot 1 (:id node3) 0 0)) => {:term 1 :vote-granted true :state (state id :follower 1 (:id node3) [] 0 0)}))
 
     (facts "HandleAppendEntriesRequest"
       (fact "Append response has current term"
@@ -54,36 +51,36 @@
 
       (fact "Append success is false if receiver term is greater than leader's term"
         (append
-          (state id :follower 1 nil [] journal 0 0)
-          (entry 0 (:id node2) 0 0 [] 0)) => {:term 1 :success false :state (state id :follower 1 nil [] journal 0 0)})
+          (state id :follower 1 nil [] 0 0)
+          (entry 0 (:id node2) 0 0 [] 0)) => {:term 1 :success false :state (state id :follower 1 nil [] 0 0)})
 
       (fact "Append success is true if leader's previous log index is zero"
         (append
-          (state id :follower 0 (:id node3) [] journal 0 0)
+          (state id :follower 0 (:id node3) [] 0 0)
           (entry 0 (:id node3) 0 0 ["Log1"] 0)) => {:term 0
                                                     :success true
                                                     :state (state id :follower 0 (:id node3)
-                                                                  [(entry 0 (:id node3) 0 0 ["Log1"] 0)] journal 0 0)})
+                                                                  [(entry 0 (:id node3) 0 0 ["Log1"] 0)] 0 0)})
 
       (fact "Append success is false if leader's previous log index is greater than zero
         and greater than length of receiver's log"
         (append
-          (state id :follower 0 (:id node3) [] journal 0 0)
+          (state id :follower 0 (:id node3) [] 0 0)
           (entry 0 (:id node3) 1 0 ["Log1"] 0)) => {:term 0
                                                     :success false
-                                                    :state (state id :follower 0 (:id node3) [] journal 0 0)})
+                                                    :state (state id :follower 0 (:id node3) [] 0 0)})
 
       (fact "Append success is false if leader's previous log index is greater than zero,
         less than length of receiver's log, and receiver's term of log entry at leader's
         previous log index is not equal to leader's previous log term"
         (append
           (state id :follower 0 (:id node3) (vector (entry 0 (:id node3) 0 0 ["Log0"] 0)
-                                                    (entry 0 (:id node3) 1 0 ["Log1"] 0)) journal 1 0)
+                                                    (entry 0 (:id node3) 1 0 ["Log1"] 0)) 1 0)
           (entry 1 (:id node3) 1 0 ["Log2"] 0)) => {:term 1
                                                     :success false
                                                     :state (state id :follower 1 (:id node3)
                                                                   [(entry 0 (:id node3) 0 0 ["Log0"] 0)
-                                                                   (entry 0 (:id node3) 1 0 ["Log1"] 0)] journal 1 0)})
+                                                                   (entry 0 (:id node3) 1 0 ["Log1"] 0)] 1 0)})
 
       (fact "Append success is true if leader's previous log index is greater than zero,
         less than length of receiver's log, and receiver's term of log entry at leader's
@@ -92,7 +89,7 @@
             (:state (append
                       (:state (append
                                 (:state (append
-                                          (state id :follower 0 (:id node3) [(entry 0 (:id node3) 0 0 [] 0)] journal 0 0)
+                                          (state id :follower 0 (:id node3) [(entry 0 (:id node3) 0 0 [] 0)] 0 0)
                                           (entry 0 (:id node3) 0 0 ["Log1"] 0)))
                                 (entry 0 (:id node3) 1 0 ["Log2"] 1)))
                       (entry 0 (:id node3) 2 0 ["Log3"] 2)))
@@ -103,7 +100,7 @@
                                                                (entry 0 (:id node3) 0 0 ["Log1"] 0)
                                                                (entry 0 (:id node3) 1 0 ["Log2"] 1)
                                                                (entry 0 (:id node3) 2 0 ["Log3"] 2)
-                                                               (entry 0 (:id node3) 3 0 [] 3)] journal 4 0)})
+                                                               (entry 0 (:id node3) 3 0 [] 3)] 4 0)})
 
       (fact "If an existing entry conflicts with a new one (same index but different terms),
         delete the existing entry and all that follow it."
@@ -111,10 +108,10 @@
             (state id :follower 0 (:id node3) (vector (entry 0 (:id node3) 0 0 ["Log0"] 0)
                                                       (entry 0 (:id node3) 0 0 ["Log1"] 0)
                                                       (entry 1 (:id node3) 1 0 ["Log2"] 0)
-                                                      (entry 1 (:id node3) 2 0 ["Log3"] 0)) journal 0 0)
+                                                      (entry 1 (:id node3) 2 0 ["Log3"] 0)) 0 0)
             (entry 0 (:id node3) 1 0 ["Log1b"] 0)) => {:term 0
                                                        :success true
                                                        :state (state id :follower 0 (:id node3)
                                                                      [(entry 0 (:id node3) 0 0 ["Log0"] 0)
                                                                       (entry 0 (:id node3) 0 0 ["Log1"] 0)
-                                                                      (entry 0 (:id node3) 1 0 ["Log1b"] 0)] journal 1 0)}))))
+                                                                      (entry 0 (:id node3) 1 0 ["Log1b"] 0)] 1 0)}))))
