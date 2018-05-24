@@ -28,11 +28,11 @@
 
 (defrecord ConsistentHash [replicas ring]
   Partitioner
-  (add [this node]
+  (add [_ node]
     (->ConsistentHash replicas (ring-push ring node replicas)))
-  (delete [this node]
+  (delete [_ node]
     (->ConsistentHash replicas (ring-pop ring node replicas)))
-  (lookup [this object]
+  (lookup [_ object]
     (if-not (empty? ring)
       (let [hash (hash->long (hash-object (murmur3-128) object))
             tail-map (tail-map ring hash)]

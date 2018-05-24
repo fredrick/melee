@@ -31,11 +31,10 @@
                   ^Number current-term
                   voted-for
                   ^IPersistentVector log
-                  journal
                   ^Number commit-index
                   ^Number last-applied]
   Consensus
-  (vote [this ballot]
+  (vote [_ ballot]
     (let [log-is-current? (or (> (:last-log-term ballot) (last-term log))
                               (and (= (:last-log-term ballot) (last-term log))
                                    (>= (:last-log-index ballot) (count log))))
@@ -46,9 +45,9 @@
       {:term term
        :vote-granted grant?
        :state (if (and grant? (nil? voted-for))
-                (->State id role term (:candidate-id ballot) log journal commit-index last-applied)
-                (->State id role term voted-for log journal commit-index last-applied))}))
-  (append [this entry]
+                (->State id role term (:candidate-id ballot) log commit-index last-applied)
+                (->State id role term voted-for log commit-index last-applied))}))
+  (append [_ entry]
     (let [term (max (:term entry) current-term)
           accept? (and (= (:term entry) current-term)
                       (or (zero? (:prev-log-index entry))
@@ -62,13 +61,12 @@
                 (->State id role term voted-for
                          (vec (concat (remove #(and (>= (:prev-log-index %) (:prev-log-index entry))
                                                     (> (:prev-log-index %) commit-index)) log) [entry]))
-                         journal
                          (if (or (empty? (:entries entry))
                                  (and (>= (count log) index)
                                       (= (:term (nth log (:prev-log-index entry))) (:term entry))))
                            (inc commit-index)
                            commit-index) last-applied)
-                (->State id role term voted-for log journal commit-index last-applied))})))
+                (->State id role term voted-for log commit-index last-applied))})))
 
 (defn ballot
   "Ballot for leader election."
@@ -77,5 +75,5 @@
 
 (defn state
   "State for node."
-  [id role ^Number current-term voted-for ^IPersistentVector log journal ^Number commit-index ^Number last-applied]
-  (->State id role current-term voted-for log journal commit-index last-applied))
+  [id role ^Number current-term voted-for ^IPersistentVector log ^Number commit-index ^Number last-applied]
+  (->State id role current-term voted-for log commit-index last-applied))
